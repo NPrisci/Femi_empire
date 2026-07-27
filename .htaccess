@@ -1,0 +1,12 @@
+RewriteEngine On
+RewriteBase /global/docs/
+
+# Ne réécrire que si ce n'est pas un fichier ou un dossier réel
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Exclure les fichiers dans ./include/ (fetch ou accès direct)
+RewriteCond %{REQUEST_URI} !^/include/
+
+# Réécrire toutes les autres URLs vers index.php?page=...
+RewriteRule ^(.*)/?$ index.php?page=$1 [L,QSA]

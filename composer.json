@@ -1,0 +1,6 @@
+{
+    "require": {
+        "fedapay/fedapay-php": "*",
+        "dompdf/dompdf": "^3.1"
+    }
+}
