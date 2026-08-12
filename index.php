@@ -11,8 +11,20 @@ require_once 'data.php';
 
 $pageStartTime = microtime(true);
 
+
 $default_page = 'home';
 $page = $_GET['page'] ?? $default_page;
+
+/*
+|--------------------------------------------------------------------------
+| TRAITEMENT AJAX / POST PAIEMENT
+|--------------------------------------------------------------------------
+*/
+
+if ($page === 'paiement' && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require __DIR__ . '/pages/paiement.php';
+    exit;
+}
 
 $pagesSansFooter = [
     'dashboard',

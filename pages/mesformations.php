@@ -1,4 +1,5 @@
 <?php
+
 // mesformations.php - Page des formations de l'utilisateur
 
 require_once __DIR__ . '/../config/database.php';
@@ -915,6 +916,36 @@ function getCategoryColor(string $categorie): string {
         <!-- ===== MAIN CONTENT ===== -->
         <main class="main-content">
 
+        <?php if (isset($_GET['paiement'])): ?>
+
+    <?php if ($_GET['paiement'] === 'success'): ?>
+
+        <div class="alert alert-success">
+            ✅ Paiement effectué avec succès.
+            Votre formation est maintenant disponible.
+        </div>
+
+    <?php elseif ($_GET['paiement'] === 'cancelled'): ?>
+
+        <div class="alert alert-warning">
+            ⚠️ Le paiement a été annulé.
+        </div>
+
+    <?php elseif ($_GET['paiement'] === 'pending'): ?>
+
+        <div class="alert alert-info">
+            ⏳ Le paiement est encore en attente de confirmation.
+        </div>
+
+    <?php elseif ($_GET['paiement'] === 'error'): ?>
+
+        <div class="alert alert-danger">
+            ❌ Impossible de confirmer le paiement.
+        </div>
+
+    <?php endif; ?>
+
+<?php endif; ?>
             <!-- HEADER -->
             <div class="page-header">
                 <h1 class="page-title">Mes <em>formations</em></h1>

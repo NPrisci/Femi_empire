@@ -1,72 +1,185 @@
 <?php
-// /config/fedapay.php - Configuration FedaPay
 
-require_once __DIR__ . '/../vendor/autoload.php';
+define(
+    'FEDAPAY_SECRET_KEY',
+    'sk_sandbox_0OYGJ2dm_Bo0NDxreq4-lHVh'
+);
 
-use FedaPay\FedaPay;
+define(
+    'FEDAPAY_API_URL',
+    'https://sandbox-api.fedapay.com'
+);
 
-// Charger les variables d'environnement
-$env_file = __DIR__ . '/../.env';
-if (file_exists($env_file)) {
-    $lines = file($env_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-    foreach ($lines as $line) {
-        if (strpos($line, '=') !== false && strpos($line, '#') !== 0) {
-            list($key, $value) = explode('=', $line, 2);
-            putenv(trim($key) . '=' . trim($value));
-        }
+define(
+    'FEDAPAY_CALLBACK_URL',
+    'https://femiempire.free.nf/pages/callback.php'
+);
+
+
+/**
+ * Créer une transaction FedaPay
+ */
+function creerTransactionFedaPay(
+    float $montant,
+    string $description,
+    string $reference,
+    int $utilisateurId
+): array {
+
+    $payload = [
+        'amount' => (int) $montant,
+
+        'currency' => [
+            'iso' => 'XOF'
+        ],
+
+        'description' => $description,
+
+        'callback_url' => FEDAPAY_CALLBACK_URL
+    ];
+
+    $ch = curl_init(
+        FEDAPAY_API_URL . '/v1/transactions'
+    );
+
+    curl_setopt_array($ch, [
+
+        CURLOPT_RETURNTRANSFER => true,
+
+        CURLOPT_POST => true,
+
+        CURLOPT_POSTFIELDS => json_encode(
+            $payload,
+            JSON_UNESCAPED_UNICODE
+        ),
+
+        CURLOPT_HTTPHEADER => [
+            'Authorization: Bearer ' . FEDAPAY_SECRET_KEY,
+            'Content-Type: application/json',
+            'Accept: application/json'
+        ],
+
+        CURLOPT_TIMEOUT => 30
+    ]);
+
+    $response = curl_exec($ch);
+
+    $curlError = curl_error($ch);
+
+    $httpCode = curl_getinfo(
+        $ch,
+        CURLINFO_HTTP_CODE
+    );
+
+    curl_close($ch);
+
+    if ($curlError) {
+        throw new Exception(
+            'Erreur CURL FedaPay : ' . $curlError
+        );
     }
+
+    $result = json_decode(
+        $response,
+        true
+    );
+
+    if ($httpCode < 200 || $httpCode >= 300) {
+
+        throw new Exception(
+            'FedaPay HTTP ' .
+            $httpCode .
+            ' : ' .
+            $response
+        );
+    }
+
+    if (!is_array($result)) {
+
+        throw new Exception(
+            'Réponse FedaPay invalide : ' .
+            $response
+        );
+    }
+
+    if (isset($result['v1/transaction'])) {
+        return $result['v1/transaction'];
+    }
+
+    return $result;
 }
 
-// Configuration FedaPay
-$api_key = getenv('FEDAPAY_API_KEY');
-$mode = getenv('FEDAPAY_MODE') ?: 'test';
 
-if ($mode === 'test') {
-    $api_key = getenv('FEDAPAY_API_KEY_TEST') ?: $api_key;
-}
+/**
+ * Récupérer une transaction FedaPay
+ */
+function getTransactionFedaPay(int $transactionId): array
+{
+    $url =
+        FEDAPAY_API_URL .
+        '/v1/transactions/' .
+        $transactionId;
 
-FedaPay::setApiKey($api_key);
-FedaPay::setEnvironment($mode === 'live' ? 'production' : 'sandbox');
+    $ch = curl_init($url);
 
-// Fonctions FedaPay
-function createFedaPayTransaction($amount, $customer, $description, $reference, $callback_url) {
-    try {
-        $transaction = \FedaPay\Transaction::create([
-            'amount' => $amount,
-            'currency' => 'XOF',
-            'description' => $description,
-            'reference' => $reference,
-            'customer' => $customer,
-            'callback_url' => $callback_url,
-            'cancel_url' => $callback_url,
-            'mode' => 'redirect'
-        ]);
-        
-        return [
-            'success' => true,
-            'transaction' => $transaction,
-            'payment_url' => $transaction->payment_url
-        ];
-    } catch (Exception $e) {
-        return [
-            'success' => false,
-            'error' => $e->getMessage()
-        ];
+    curl_setopt_array($ch, [
+
+        CURLOPT_RETURNTRANSFER => true,
+
+        CURLOPT_HTTPGET => true,
+
+        CURLOPT_HTTPHEADER => [
+            'Authorization: Bearer ' . FEDAPAY_SECRET_KEY,
+            'Accept: application/json'
+        ],
+
+        CURLOPT_TIMEOUT => 30
+    ]);
+
+    $response = curl_exec($ch);
+
+    $curlError = curl_error($ch);
+
+    $httpCode = curl_getinfo(
+        $ch,
+        CURLINFO_HTTP_CODE
+    );
+
+    curl_close($ch);
+
+    if ($curlError) {
+
+        throw new Exception(
+            'Erreur CURL FedaPay : ' .
+            $curlError
+        );
     }
-}
 
-function verifyFedaPayTransaction($transaction_id) {
-    try {
-        $transaction = \FedaPay\Transaction::retrieve($transaction_id);
-        return [
-            'success' => true,
-            'status' => $transaction->status,
-            'transaction' => $transaction
-        ];
-    } catch (Exception $e) {
-        return [
-            'success' => false,
-            'error' => $e->getMessage()
-        ];
+    $result = json_decode(
+        $response,
+        true
+    );
+
+    if ($httpCode < 200 || $httpCode >= 300) {
+
+        throw new Exception(
+            'FedaPay HTTP ' .
+            $httpCode .
+            ' : ' .
+            $response
+        );
     }
+
+    if (!is_array($result)) {
+
+        throw new Exception(
+            'Réponse FedaPay invalide.'
+        );
+    }
+
+    if (isset($result['v1/transaction'])) {
+        return $result['v1/transaction'];
+    }
+
+    return $result;
 }

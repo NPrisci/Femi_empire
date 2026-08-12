@@ -19,6 +19,7 @@ $pages = [
     'test' => 'test',
     'certificats' => 'Certificats',
     'admin' => 'admin',
+    'paiement' => 'paiement',
 ];
 
 // Table des pages autorisées (sécurisé)
@@ -40,5 +41,6 @@ $pages_allowed = [
     'profile' => 'pages/profile.php',
     'client' => 'pages/client.php',
     'certificats' => 'pages/certificats.php',
-    'mesformations' => 'pages/mesformations.php'
+    'mesformations' => 'pages/mesformations.php',
+    'paiement' => 'pages/paiement.php'
 ];
