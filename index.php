@@ -18,7 +18,8 @@ $pagesSansFooter = [
     'dashboard',
     'profile',
     'certificats',
-    'mesformations'
+    'mesformations',
+    'test'
 ];
 
 // Sécuriser le paramètre de page

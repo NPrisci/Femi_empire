@@ -39,69 +39,7 @@
     }
 </script>
 
-<script>
-    function getUser() {
-        // → Remplace par ta session PHP :
-        // const user = <?= json_encode($_SESSION['user'] ?? null) ?>;
-        try {
-            return JSON.parse(sessionStorage.getItem('femiFinger_user'));
-        } catch (e) {
-            return null;
-        }
-    }
 
-    function logoutUser() {
-        sessionStorage.removeItem('femiFinger_user');
-        window.location.href = '?page=home';
-    }
-
-    function initUserIcon() {
-        const user = getUser();
-        const ddOut = document.getElementById('ddLoggedOut');
-        const ddIn = document.getElementById('ddLoggedIn');
-        const label = document.getElementById('userBtnLabel');
-        const mobBtn = document.getElementById('mobUserBtn');
-        const mobAv = document.getElementById('mobUserAvatar');
-        if (!ddOut || !ddIn) return;
-
-        if (user) {
-            ddOut.style.display = 'none';
-            ddIn.style.display = 'block';
-            document.getElementById('ddUserName').textContent = user.name || '';
-            document.getElementById('ddUserEmail').textContent = user.email || '';
-            const initials = (user.name || 'U').charAt(0).toUpperCase();
-            // Remplace l'icône par avatar + prénom
-            const btn = document.getElementById('userBtn');
-            if (btn) btn.innerHTML = `
-      <div class="user-avatar">${initials}</div>
-      <span style="font-size:12px">${user.name.split(' ')[0]}</span>`;
-            if (mobBtn) mobBtn.style.display = 'none';
-            if (mobAv) {
-                mobAv.style.display = 'flex';
-                mobAv.textContent = initials;
-            }
-        } else {
-            ddOut.style.display = 'block';
-            ddIn.style.display = 'none';
-            if (mobBtn) mobBtn.style.display = 'flex';
-            if (mobAv) mobAv.style.display = 'none';
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        initUserIcon();
-        const wrap = document.getElementById('userIconWrap');
-        const btn = document.getElementById('userBtn');
-        if (btn) btn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            wrap.classList.toggle('open');
-        });
-        document.addEventListener('click', function() {
-            if (wrap) wrap.classList.remove('open');
-        });
-        if (wrap) wrap.addEventListener('click', e => e.stopPropagation());
-    });
-</script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // ========== FILTRE PORTFOLIO ==========

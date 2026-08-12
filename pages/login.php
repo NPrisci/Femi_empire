@@ -1,31 +1,25 @@
 <?php
 // ==================================================
+// INCLUSION DES CONFIGURATIONS
+// ==================================================
+require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/session.php';
+
+// ==================================================
 // DÉSACTIVER L'AFFICHAGE DES ERREURS EN PRODUCTION
 // ==================================================
 error_reporting(0);
 ini_set('display_errors', 0);
 
 // ==================================================
-// DÉMARRER LA SESSION AVANT TOUT AFFICHAGE
+// VÉRIFICATION DE CONNEXION
 // ==================================================
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
 if (isLoggedIn()) {
-
-    if (
-        isset($_SESSION['user_role']) &&
-        $_SESSION['user_role'] === 'admin'
-    ) {
-
+    if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
         header('Location: pages/admin/index.php');
-
     } else {
-
         header('Location: ?page=dashboard');
     }
-
     exit;
 }
 
@@ -53,10 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $errors = [];
 
-        if (
-            empty($email) ||
-            !filter_var($email, FILTER_VALIDATE_EMAIL)
-        ) {
+        if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $errors[] = 'Email invalide.';
         }
 
@@ -65,12 +56,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         if (!empty($errors)) {
-
             echo json_encode([
                 'success' => false,
                 'errors'  => $errors
             ]);
-
             exit;
         }
 
@@ -88,50 +77,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ");
 
         $stmt->execute([$email]);
-
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         // ==================================================
         // VÉRIFICATION USER
         // ==================================================
 
-        if (
-            !$user ||
-            !password_verify($password, $user['password'])
-        ) {
-
+        if (!$user || !password_verify($password, $user['password'])) {
             echo json_encode([
                 'success' => false,
                 'message' => 'Email ou mot de passe incorrect.'
             ]);
-
             exit;
         }
 
         // ==================================================
-        // STATUT COMPTE - CORRECTION ICI
+        // STATUT COMPTE
         // ==================================================
 
-        // Valeur par défaut si la clé 'statut' n'existe pas
         $statut = $user['statut'] ?? 'actif';
 
         if ($statut === 'suspendu') {
-
             echo json_encode([
                 'success' => false,
                 'message' => 'Votre compte est suspendu.'
             ]);
-
             exit;
         }
 
         if ($statut === 'en_attente') {
-
             echo json_encode([
                 'success' => false,
                 'message' => 'Votre compte est en attente d\'activation.'
             ]);
-
             exit;
         }
 
@@ -139,30 +117,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // REHASH PASSWORD
         // ==================================================
 
-        if (
-            password_needs_rehash(
-                $user['password'],
-                PASSWORD_BCRYPT,
-                ['cost' => 12]
-            )
-        ) {
-
-            $newHash = password_hash(
-                $password,
-                PASSWORD_BCRYPT,
-                ['cost' => 12]
-            );
+        if (password_needs_rehash($user['password'], PASSWORD_BCRYPT, ['cost' => 12])) {
+            $newHash = password_hash($password, PASSWORD_BCRYPT, ['cost' => 12]);
 
             $update = $pdo->prepare("
                 UPDATE utilisateurs
                 SET password = ?
                 WHERE id = ?
             ");
-
-            $update->execute([
-                $newHash,
-                $user['id']
-            ]);
+            $update->execute([$newHash, $user['id']]);
         }
 
         // ==================================================
@@ -177,10 +140,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'id'      => (int)$user['id'],
             'prenom'  => $prenom,
             'nom'     => $nom,
-            'name'    => trim($prenom . ' ' . $nom),
             'email'   => $user['email'],
             'role'    => $role,
-            'statut'  => $statut // Utilisation de la variable définie
+            'statut'  => $statut,
+            'formation' => $user['formation'] ?? ''
         ]);
 
         // ==================================================
@@ -196,42 +159,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // ==================================================
 
         echo json_encode([
-
             'success'  => true,
-
             'message'  => 'Connexion réussie !',
-
             'redirect' => $redirect,
-
             'user' => [
-
                 'name' => trim($prenom . ' ' . $nom),
-
                 'email' => $user['email'],
-
-                'initials' => strtoupper(
-                    substr($prenom, 0, 1) .
-                    substr($nom, 0, 1)
-                ),
-
+                'initials' => strtoupper(substr($prenom, 0, 1) . substr($nom, 0, 1)),
                 'prenom' => $prenom,
-
                 'role' => $role
             ]
         ]);
-
         exit;
 
     } catch (PDOException $e) {
-
+        error_log('Login error: ' . $e->getMessage());
         echo json_encode([
-
             'success' => false,
-
-            'message' => $e->getMessage()
-
+            'message' => 'Une erreur est survenue. Veuillez réessayer.'
         ]);
-
         exit;
     }
 }
@@ -314,221 +260,131 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {
     const loginForm = document.getElementById('loginForm');
     const loginError = document.getElementById('loginError');
     const loginBtn = document.getElementById('loginBtn');
 
+    // Vérifier si les éléments existent
+    if (!loginForm) {
+        console.error('Formulaire de connexion non trouvé');
+        return;
+    }
+
     // Cacher le message d'erreur initial
-    loginError.style.display = 'none';
+    if (loginError) {
+        loginError.style.display = 'none';
+    }
 
-    if (loginForm) {
-      loginForm.addEventListener('submit', async function(e) {
-        e.preventDefault(); // Empêche la soumission normale
+    loginForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
 
-        // État de chargement
-        loginBtn.disabled = true;
-        loginBtn.innerHTML = 'Connexion... <span class="spinner"></span>';
+        // Désactiver le bouton et afficher le chargement
+        if (loginBtn) {
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = 'Connexion... <span class="spinner"></span>';
+        }
 
         // Cacher les erreurs précédentes
-        loginError.style.display = 'none';
+        if (loginError) {
+            loginError.style.display = 'none';
+        }
 
-        // Récupérer les données du formulaire
         const formData = new FormData(loginForm);
 
         try {
-          const response = await fetch(window.location.href, {
-            method: 'POST',
-            body: formData
-          });
+            const response = await fetch(window.location.href, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
 
-          // Vérifier si la réponse est du JSON
-          const contentType = response.headers.get('content-type');
-          if (!contentType || !contentType.includes('application/json')) {
-            throw new Error('La réponse n\'est pas au format JSON');
-          }
-
-          const data = await response.json();
-
-          if (data.success) {
-            // Message de succès
-            loginError.style.background = '#f0fff0';
-            loginError.style.border = '1px solid #ccffcc';
-            loginError.style.color = '#27ae60';
-            loginError.textContent = data.message || 'Connexion réussie !';
-            loginError.style.display = 'block';
-
-            // Redirection
-            setTimeout(() => {
-              window.location.href = data.redirect;
-            }, 1000);
-          } else {
-            // Afficher l'erreur
-            loginError.style.background = '#fff0f0';
-            loginError.style.border = '1px solid #ffcccc';
-            loginError.style.color = '#c0392b';
-
-            if (data.errors) {
-              loginError.innerHTML = data.errors.join('<br>');
-            } else {
-              loginError.textContent = data.message || 'Email ou mot de passe incorrect';
+            // Vérifier le statut HTTP
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('Erreur serveur:', errorText);
+                throw new Error(`Erreur serveur (${response.status})`);
             }
 
-            loginError.style.display = 'block';
-
-            // Réactiver le bouton
-            loginBtn.disabled = false;
-            loginBtn.innerHTML = 'Se connecter →';
-          }
-        } catch (error) {
-          console.error('Erreur:', error);
-
-          loginError.style.background = '#fff0f0';
-          loginError.style.border = '1px solid #ffcccc';
-          loginError.style.color = '#c0392b';
-          loginError.innerHTML = 'Erreur réseau. Veuillez réessayer.<br>' + error.message;
-          loginError.style.display = 'block';
-
-          // Réactiver le bouton
-          loginBtn.disabled = false;
-          loginBtn.innerHTML = 'Se connecter →';
-        }
-      });
-    }
-  });
-
-  function togglePwd(id, btn) {
-    var input = document.getElementById(id);
-    if (!input) return;
-    input.type = input.type === 'password' ? 'text' : 'password';
-    btn.textContent = input.type === 'password' ? '👁' : '🙈';
-  }
-
-  
-</script>
-
-<script>
-if (data.success) {
-
-    // Message de succès
-    loginError.style.background = '#f0fff0';
-    loginError.style.border = '1px solid #ccffcc';
-    loginError.style.color = '#27ae60';
-
-    loginError.textContent =
-        data.message || 'Connexion réussie !';
-
-    loginError.style.display = 'block';
-
-    // Redirection selon le rôle
-    setTimeout(() => {
-
-        if (
-            data.user &&
-            data.user.role === 'admin'
-        ) {
-
-            window.location.href =
-                'pages/admin/index.php';
-
-        } else {
-
-            window.location.href =
-                data.redirect;
-        }
-
-    }, 1000);
-}
-</script>
-<script>
-  // Dans votre événement submit
-loginForm.addEventListener('submit', async function(e) {
-    e.preventDefault();
-
-    loginBtn.disabled = true;
-    loginBtn.innerHTML = 'Connexion... <span class="spinner"></span>';
-    loginError.style.display = 'none';
-
-    const formData = new FormData(loginForm);
-
-    try {
-        const response = await fetch(window.location.href, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest' // Indique que c'est une requête AJAX
+            // Lire et parser la réponse JSON
+            let data;
+            try {
+                const textResponse = await response.text();
+                data = JSON.parse(textResponse);
+            } catch (parseError) {
+                console.error('Erreur de parsing JSON:', parseError);
+                throw new Error('Réponse invalide du serveur');
             }
-        });
 
-        // Vérifier d'abord le statut HTTP
-        if (!response.ok) {
-            throw new Error(`Erreur HTTP: ${response.status}`);
-        }
-
-        // Lire la réponse comme texte d'abord pour déboguer
-        const textResponse = await response.text();
-        console.log('Réponse brute:', textResponse); // Pour déboguer
-
-        // Essayer de parser le JSON
-        try {
-            const data = JSON.parse(textResponse);
-            
             if (data.success) {
-                loginError.style.background = '#f0fff0';
-                loginError.style.border = '1px solid #ccffcc';
-                loginError.style.color = '#27ae60';
-                loginError.textContent = data.message || 'Connexion réussie !';
-                loginError.style.display = 'block';
+                // Message de succès
+                if (loginError) {
+                    loginError.style.background = '#f0fff0';
+                    loginError.style.border = '1px solid #ccffcc';
+                    loginError.style.color = '#27ae60';
+                    loginError.textContent = data.message || 'Connexion réussie !';
+                    loginError.style.display = 'block';
+                }
 
+                // Redirection après un court délai
                 setTimeout(() => {
-                    window.location.href = data.redirect || (data.user?.role === 'admin' ? 'pages/admin/index.php' : '?page=dashboard');
+                    window.location.href = data.redirect || '?page=dashboard';
                 }, 1000);
             } else {
+                // Message d'erreur
+                if (loginError) {
+                    loginError.style.background = '#fff0f0';
+                    loginError.style.border = '1px solid #ffcccc';
+                    loginError.style.color = '#c0392b';
+                    
+                    if (data.errors) {
+                        loginError.innerHTML = data.errors.join('<br>');
+                    } else {
+                        loginError.textContent = data.message || 'Email ou mot de passe incorrect';
+                    }
+                    loginError.style.display = 'block';
+                }
+
+                // Réactiver le bouton
+                if (loginBtn) {
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = 'Se connecter →';
+                }
+            }
+        } catch (error) {
+            console.error('Erreur de connexion:', error);
+            
+            // Afficher l'erreur
+            if (loginError) {
                 loginError.style.background = '#fff0f0';
                 loginError.style.border = '1px solid #ffcccc';
                 loginError.style.color = '#c0392b';
-                loginError.innerHTML = data.errors ? data.errors.join('<br>') : (data.message || 'Email ou mot de passe incorrect');
+                loginError.innerHTML = 'Une erreur est survenue. Veuillez réessayer.<br><small>' + error.message + '</small>';
                 loginError.style.display = 'block';
+            }
+
+            // Réactiver le bouton
+            if (loginBtn) {
                 loginBtn.disabled = false;
                 loginBtn.innerHTML = 'Se connecter →';
             }
-        } catch (parseError) {
-            // Si ce n'est pas du JSON, c'est probablement du HTML
-            console.error('Réponse non-JSON reçue:', textResponse.substring(0, 500));
-            throw new Error('Le serveur a renvoyé une page HTML au lieu du JSON attendu');
         }
-    } catch (error) {
-        console.error('Erreur détaillée:', error);
-        loginError.style.background = '#fff0f0';
-        loginError.style.border = '1px solid #ffcccc';
-        loginError.style.color = '#c0392b';
-        loginError.innerHTML = 'Erreur réseau. Veuillez réessayer.<br>Détail: ' + error.message;
-        loginError.style.display = 'block';
-        loginBtn.disabled = false;
-        loginBtn.innerHTML = 'Se connecter →';
-    }
+    });
 });
-</script>
-<style>
-  .spinner {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    border: 2px solid #ffffff;
-    border-radius: 50%;
-    border-top-color: transparent;
-    animation: spin 0.8s linear infinite;
-    margin-left: 8px;
-  }
 
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
+// Fonction pour afficher/masquer le mot de passe
+function togglePwd(id, btn) {
+    var input = document.getElementById(id);
+    if (!input) return;
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        btn.textContent = '🙈';
+    } else {
+        input.type = 'password';
+        btn.textContent = '👁';
     }
-  }
-
-  .btn-submit:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
-  }
-</style>
+}
+</script>

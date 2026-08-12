@@ -16,11 +16,15 @@ $pages = [
     'dashboard' => 'dashboard',
     'profile' => 'Profile',
     'client' => 'Client',
-    'certificats' => 'Certificats'
+    'test' => 'test',
+    'certificats' => 'Certificats',
+    'admin' => 'admin',
 ];
 
 // Table des pages autorisées (sécurisé)
 $pages_allowed = [
+    'admin' => 'pages/admin/index.php',
+    'test' => 'pages/test.php',
     'home' => 'pages/overview.php',
     'about' => 'pages/about.php',
     'contact' => 'pages/contact.php',

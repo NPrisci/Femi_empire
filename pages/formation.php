@@ -1,5 +1,4 @@
 <?php
-// formation.php - Page dynamique des formations (accessible sans connexion)
 
 require_once __DIR__ . '/../config/database.php';
 
@@ -125,16 +124,8 @@ function formatPrice(float $price): string {
     return number_format($price, 0, ',', ' ') . ' F';
 }
 ?>
-<!DOCTYPE html>
-<html lang="fr">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FEMI Fairy Finger — Formations</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  
     <style>
         /* ===== RESET BOOTSTRAP CONFLICTS ===== */
         .navbar {
@@ -391,9 +382,10 @@ function formatPrice(float $price): string {
 
         /* ===== FORMATIONS ===== */
         .formations {
-            padding: 80px 24px;
+            padding: 8px 0px;
             max-width: 1200px;
             margin: 0 auto;
+            background-color: transparent;
         }
 
         .formations-header {
@@ -812,6 +804,13 @@ function formatPrice(float $price): string {
             text-decoration: underline !important;
         }
 
+        /* ===== LOADING SPINNER ===== */
+        .spinner-border-sm {
+            width: 1rem;
+            height: 1rem;
+            border-width: 0.15em;
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 992px) {
             .why-inner {
@@ -967,9 +966,8 @@ function formatPrice(float $price): string {
             }
         }
     </style>
-</head>
 
-<body>
+     
 
     <!-- ===== NAVBAR ===== -->
     <nav class="navbar">
@@ -993,7 +991,7 @@ function formatPrice(float $price): string {
         <div class="hero-bg"></div>
         <div class="hero-band"></div>
         <div class="hero-content">
-            <div class="hero-brand">FEMI &nbsp;·&nbsp; FAIRY FINGER</div>
+            <div class="hero-brand" style="color: #ffffff;">FEMI &nbsp;·&nbsp; FAIRY FINGER</div>
             <h1 class="hero-title">
                 Nos<br>
                 <span>Formations</span>
@@ -1147,7 +1145,7 @@ function formatPrice(float $price): string {
                                     S'inscrire maintenant
                                 </button>
                             <?php else: ?>
-                                <button type="button" class="card-cta card-cta btn-connexion-required"
+                                <button type="button" class="card-cta btn-connexion-required"
                                         onclick="showConnexionModal('<?= h($f['titre']) ?>')">
                                     🔒 Connectez-vous pour vous inscrire
                                 </button>
@@ -1164,7 +1162,7 @@ function formatPrice(float $price): string {
         <div class="why-inner">
             <div class="why-text reveal">
                 <div class="section-label">Pourquoi nous choisir</div>
-                <h2 class="section-title">L'excellence à <em>chaque</em> formation</h2>
+                <h2 class="section-title" style="color: #2c2420;">L'excellence à <em>chaque</em> formation</h2>
                 <div class="why-features">
                     <div class="why-feature">
                         <div class="why-feature-icon">✦</div>
@@ -1276,59 +1274,6 @@ function formatPrice(float $price): string {
             </div>
         </div>
     </div>
-
-    <!-- ===== MODAL INSCRIPTION ===== -->
-    <div class="modal fade" id="inscriptionModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="border-radius: 24px; border: none;">
-                <div class="modal-header" style="border-bottom: 2px solid #f0f0f0; padding: 20px 24px;">
-                    <h5 class="modal-title fw-bold" id="inscriptionModalLabel">
-                        <i class="bi bi-journal-bookmark text-primary me-2"></i>
-                        Confirmation d'inscription
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body text-center p-5">
-                    <div class="display-1 mb-3">📝</div>
-                    <h4 class="fw-bold mb-3">Confirmer votre inscription</h4>
-                    <p class="text-muted mb-2">Vous allez vous inscrire à la formation :</p>
-                    <p class="fw-bold" id="modalFormationTitre">-</p>
-                    <p class="text-muted">Montant : <strong class="text-primary" id="modalFormationPrix">-</strong> FCFA</p>
-                    <form method="POST" id="inscriptionForm">
-                        <input type="hidden" name="action" value="inscrire">
-                        <input type="hidden" name="formation_id" id="modalFormationId" value="">
-                        <div class="mt-4">
-                            <button type="submit" class="btn btn-success rounded-pill px-5 me-2">
-                                <i class="bi bi-check-circle me-2"></i>
-                                Confirmer l'inscription
-                            </button>
-                            <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">
-                                Annuler
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ===== MODAL CONFIRMATION ===== -->
-    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content" style="border-radius: 24px; border: none;">
-                <div class="modal-body text-center p-5">
-                    <div class="display-1 mb-3">✅</div>
-                    <h4 class="fw-bold mb-3">Inscription réussie !</h4>
-                    <p class="text-muted mb-4">Vous êtes maintenant inscrit à cette formation.</p>
-                    <button type="button" class="btn btn-primary rounded-pill px-5" data-bs-dismiss="modal" id="confirmationContinueBtn">
-                        <i class="bi bi-check-circle me-2"></i>
-                        Continuer
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- ===== SCRIPTS ===== -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -1357,57 +1302,50 @@ function formatPrice(float $price): string {
                 connexionModal.show();
             };
 
-            // ===== INSCRIPTION =====
-            var inscriptionModal = new bootstrap.Modal(document.getElementById('inscriptionModal'));
-            var confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
-
+            
+            // ===== INSCRIPTION AVEC FEDAPAY =====
             document.querySelectorAll('.inscription-btn').forEach(function(button) {
                 button.addEventListener('click', function() {
+                    // Désactiver le bouton
+                    this.disabled = true;
+                    var originalText = this.textContent;
+                    this.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Traitement...';
+
                     var formationId = this.dataset.formationId;
                     var formationTitre = this.dataset.formationTitre;
                     var formationPrix = this.dataset.formationPrix;
 
-                    document.getElementById('modalFormationId').value = formationId;
-                    document.getElementById('modalFormationTitre').textContent = formationTitre;
-                    document.getElementById('modalFormationPrix').textContent = parseInt(formationPrix)
-                        .toLocaleString();
-
-                    inscriptionModal.show();
-                });
-            });
-
-            document.getElementById('inscriptionForm').addEventListener('submit', async function(e) {
-                e.preventDefault();
-
-                var formData = new FormData(this);
-
-                try {
-                    var response = await fetch('includes/inscription_handler.php', {
+                    fetch('/pages/paiement_fedapay.php', {
                         method: 'POST',
-                        body: formData
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            formation_id: formationId,
+                            titre: formationTitre,
+                            prix: formationPrix
+                        })
+                    })
+                    .then(function(response) {
+                        return response.json();
+                    })
+                    .then(function(data) {
+                        if (data.success) {
+                            // Rediriger vers FedaPay
+                            window.location.href = data.url;
+                        } else {
+                            alert('❌ ' + data.message);
+                            button.disabled = false;
+                            button.textContent = "S'inscrire maintenant";
+                        }
+                    })
+                    .catch(function(error) {
+                        console.error('Erreur:', error);
+                        alert('❌ Erreur technique. Veuillez réessayer.');
+                        button.disabled = false;
+                        button.textContent = "S'inscrire maintenant";
                     });
-
-                    var data = await response.json();
-
-                    if (data.success) {
-                        inscriptionModal.hide();
-
-                        document.getElementById('confirmationModalLabel').textContent = 'Inscription réussie !';
-                        document.getElementById('confirmationTitle').textContent = '✅ Inscription réussie !';
-                        document.getElementById('confirmationMessage').textContent =
-                            'Vous êtes maintenant inscrit à cette formation.';
-                        confirmationModal.show();
-
-                        document.getElementById('confirmationContinueBtn').onclick = function() {
-                            location.reload();
-                        };
-                    } else {
-                        alert('Erreur : ' + (data.error || 'Une erreur est survenue'));
-                    }
-                } catch (error) {
-                    console.error('Erreur:', error);
-                    alert('Une erreur technique est survenue. Veuillez réessayer.');
-                }
+                });
             });
 
             // ===== CONSOLE LOG DEBUG =====
@@ -1421,7 +1359,3 @@ function formatPrice(float $price): string {
             console.log('=== FIN DEBUG ===');
         });
     </script>
-
-</body>
-
-</html>
