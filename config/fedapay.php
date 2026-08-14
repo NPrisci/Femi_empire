@@ -183,3 +183,58 @@ function getTransactionFedaPay(int $transactionId): array
 
     return $result;
 }
+
+function fedapayGetTransaction(int $transactionId): ?array
+{
+    $url = FEDAPAY_API_URL . '/v1/transactions/' . $transactionId;
+
+    $ch = curl_init($url);
+
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_HTTPHEADER => [
+            'Authorization: Bearer ' . FEDAPAY_SECRET_KEY,
+            'Content-Type: application/json',
+            'Accept: application/json'
+        ],
+        CURLOPT_TIMEOUT => 30
+    ]);
+
+    $response = curl_exec($ch);
+
+    $curlError = curl_error($ch);
+
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+    curl_close($ch);
+
+    if ($curlError) {
+        throw new Exception(
+            'Erreur CURL FedaPay : ' . $curlError
+        );
+    }
+
+    if ($httpCode < 200 || $httpCode >= 300) {
+        throw new Exception(
+            'FedaPay HTTP ' .
+            $httpCode .
+            ' : ' .
+            $response
+        );
+    }
+
+    $data = json_decode($response, true);
+
+    if (!is_array($data)) {
+        throw new Exception(
+            'Réponse FedaPay invalide : ' .
+            $response
+        );
+    }
+
+    // FedaPay retourne généralement la transaction
+    // sous la clé v1/transaction
+    return $data['v1/transaction']
+        ?? $data['transaction']
+        ?? $data;
+}
