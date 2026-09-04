@@ -971,26 +971,7 @@ function formatPrice(float $price): string
         }
     }
 </style>
-
-
-
-<!-- ===== NAVBAR ===== -->
-<nav class="navbar">
-    <a href="?page=dashboard" class="logo">FEMI <span>Fairy Finger</span></a>
-    <div class="navbar-right">
-        <?php if ($isLoggedIn && $user): ?>
-            <a href="?page=dashboard" class="navbar-link">Dashboard</a>
-            <a href="?page=mesformations" class="navbar-link">Mes formations</a>
-            <a href="?page=certificats" class="navbar-link">Certificats</a>
-            <a href="?page=profile" class="navbar-link">Profil</a>
-            <div class="avatar-sm"><?= h(initiales($user['prenom'], $user['nom'])) ?></div>
-        <?php else: ?>
-            <a href="?page=login" class="btn-connexion">Se connecter</a>
-            <a href="?page=register" class="btn-connexion" style="background: var(--rose); color: white;">S'inscrire</a>
-        <?php endif; ?>
-    </div>
-</nav>
-
+<br> 
 <!-- ===== HERO ===== -->
 <section class="hero">
     <div class="hero-bg"></div>

@@ -3439,9 +3439,9 @@
                                     <option value="formation-maquillage">Formation Maquillage Pro (4 jours)</option>
                                 </optgroup>
                                 <optgroup label="Forfaits & Tarifs">
-                                    <option value="forfait-decouverte">Forfait Découverte - 50€</option>
-                                    <option value="forfait-prestige">Forfait Prestige - 120€</option>
-                                    <option value="forfait-formation">Forfait Formation Complète - 450€</option>
+                                    <option value="forfait-decouverte">Forfait Découverte - 50 000 F</option>
+                                    <option value="forfait-prestige">Forfait Prestige - 120 000 F</option>
+                                    <option value="forfait-formation">Forfait Formation Complète - 450 000 F</option>
                                 </optgroup>
                             </select>
                         </div>
@@ -3636,9 +3636,9 @@
                     'maquillage-soiree': 'Maquillage Soirée (1h)',
                     'formation-ongles': 'Formation Prothésie Ongulaire (5 jours)',
                     'formation-maquillage': 'Formation Maquillage Pro (4 jours)',
-                    'forfait-decouverte': 'Forfait Découverte - 50€',
-                    'forfait-prestige': 'Forfait Prestige - 120€',
-                    'forfait-formation': 'Forfait Formation Complète - 450€'
+                    'forfait-decouverte': 'Forfait Découverte - 50 000 F',
+                    'forfait-prestige': 'Forfait Prestige - 120 000 F',
+                    'forfait-formation': 'Forfait Formation Complète - 450 000 F'
                 };
                 return map[id] || 'Prestation FemiEmpire';
             }

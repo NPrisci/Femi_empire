@@ -1017,7 +1017,7 @@ function getCategoryColor(string $categorie): string {
                                 <div class="card-meta">
                                     <span>⏱ <?= $f['duree'] ?? 0 ?> heures</span>
                                     <span>📅 <?= formatDateFr($f['date_obtention']) ?></span>
-                                    <span>💰 <?= number_format($f['prix'] ?? 0, 2, ',', ' ') ?> €</span>
+                                    <span>💰 <?= number_format($f['prix'] ?? 0, 2, ',', ' ') ?> FCFA</span>
                                 </div>
                                 <div class="progress-section">
                                     <div class="progress-header">
