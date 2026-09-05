@@ -10,11 +10,11 @@ function getDB(): PDO
         return $pdo;
     }
 
-    $dbHost = getenv('MYSQLHOST');
-    $dbPort = getenv('MYSQLPORT') ?: '3306';
-    $dbName = getenv('MYSQLDATABASE');
-    $dbUser = getenv('MYSQLUSER');
-    $dbPass = getenv('MYSQLPASSWORD');
+    $dbHost = getenv('DB_HOST');
+    $dbPort = getenv('DB_PORT') ?: '3306';
+    $dbName = getenv('DB_NAME');
+    $dbUser = getenv('DB_USER');
+    $dbPass = getenv('DB_PASSWORD');
 
     if (!$dbHost || !$dbName || !$dbUser) {
         error_log('Variables MySQL manquantes sur Railway.');
