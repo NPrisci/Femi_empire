@@ -3,5 +3,6 @@
 }
 
 :{$PORT} {
-    respond "OK RAILWAY" 200
+    root * /app
+    php_server
 }
