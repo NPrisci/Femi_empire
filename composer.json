@@ -1,6 +1,6 @@
 {
     "require": {
-        "fedapay/fedapay-php": "^1.0"
+        "fedapay/fedapay-php": "^0.4.8"
     },
     "scripts": {
         "post-install-cmd": [
