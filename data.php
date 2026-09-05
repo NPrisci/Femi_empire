@@ -6,7 +6,8 @@ $pages = [
     'contact' => 'Contact',
     'service' => 'Service',
     'formation' => 'Formation',
-    'mesformation' => 'Mes-formation',
+    'formation_detail' => 'Formation Detail',
+    'mesformations' => 'Mes-formation',
     'produit' => 'Produit',
     'register' => 'Register',
     'login' => 'Login',
@@ -19,6 +20,9 @@ $pages = [
     'test' => 'test',
     'certificats' => 'Certificats',
     'admin' => 'admin',
+    'telecharger_support' => 'telecharger_support',
+    'telecharger_exercice' => 'telecharger_exercice',
+    'soumettre_realisation' => 'soumettre_realisation',
     'paiement' => 'paiement',
 ];
 
@@ -30,6 +34,7 @@ $pages_allowed = [
     'about' => 'pages/about.php',
     'contact' => 'pages/contact.php',
     'formation' => 'pages/formation.php',
+    'formation_detail' => 'pages/formation_detail.php',
     'service' => 'pages/service.php',
     'produit' => 'pages/produit.php',
     'register' => 'pages/register.php',
@@ -42,5 +47,8 @@ $pages_allowed = [
     'client' => 'pages/client.php',
     'certificats' => 'pages/certificats.php',
     'mesformations' => 'pages/mesformations.php',
+    'telecharger_support' => 'pages/telecharger_support.php',
+    'telecharger_exercice' => 'pages/telecharger_exercice.php',
+    'soumettre_realisation' => 'pages/soumettre_realisation.php',
     'paiement' => 'pages/paiement.php'
 ];

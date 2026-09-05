@@ -2,6 +2,159 @@
 // pages/admin/includes/functions.php
 // Fonctions spécifiques à l'administration
 
+// ===== FONCTIONS POUR LES FICHIERS =====
+
+if (!function_exists('uploadFile')) {
+    /**
+     * Upload d'un fichier avec validation
+     * 
+     * @param array $file Le fichier $_FILES['nom']
+     * @param string $upload_dir Le dossier de destination
+     * @param array $allowed_extensions Les extensions autorisées
+     * @param int $max_size Taille max en octets (défaut: 10Mo)
+     * @return array ['success' => bool, 'filename' => string|null, 'message' => string]
+     */
+    function uploadFile($file, $upload_dir, $allowed_extensions = [], $max_size = 10485760) {
+        // Vérifier s'il y a une erreur
+        if ($file['error'] !== UPLOAD_ERR_OK) {
+            $messages = [
+                UPLOAD_ERR_INI_SIZE => 'Le fichier dépasse la taille maximale autorisée par le serveur.',
+                UPLOAD_ERR_FORM_SIZE => 'Le fichier dépasse la taille maximale autorisée par le formulaire.',
+                UPLOAD_ERR_PARTIAL => 'Le fichier n\'a été que partiellement téléchargé.',
+                UPLOAD_ERR_NO_FILE => 'Aucun fichier n\'a été téléchargé.',
+                UPLOAD_ERR_NO_TMP_DIR => 'Le dossier temporaire est manquant.',
+                UPLOAD_ERR_CANT_WRITE => 'Impossible d\'écrire le fichier sur le disque.',
+                UPLOAD_ERR_EXTENSION => 'Une extension PHP a arrêté le téléchargement.'
+            ];
+            return [
+                'success' => false,
+                'filename' => null,
+                'message' => $messages[$file['error']] ?? 'Erreur inconnue lors du téléchargement.'
+            ];
+        }
+        
+        // Vérifier la taille
+        if ($file['size'] > $max_size) {
+            return [
+                'success' => false,
+                'filename' => null,
+                'message' => 'Le fichier est trop volumineux. Taille maximale : ' . ($max_size / 1024 / 1024) . ' Mo.'
+            ];
+        }
+        
+        // Récupérer l'extension
+        $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        
+        // Vérifier l'extension
+        if (!empty($allowed_extensions) && !in_array($extension, $allowed_extensions)) {
+            return [
+                'success' => false,
+                'filename' => null,
+                'message' => 'Extension non autorisée. Extensions autorisées : ' . implode(', ', $allowed_extensions) . '.'
+            ];
+        }
+        
+        // Créer le dossier s'il n'existe pas
+        if (!is_dir($upload_dir)) {
+            if (!mkdir($upload_dir, 0755, true)) {
+                return [
+                    'success' => false,
+                    'filename' => null,
+                    'message' => 'Impossible de créer le dossier de téléchargement.'
+                ];
+            }
+        }
+        
+        // Vérifier que le dossier est accessible en écriture
+        if (!is_writable($upload_dir)) {
+            return [
+                'success' => false,
+                'filename' => null,
+                'message' => 'Le dossier de téléchargement n\'est pas accessible en écriture.'
+            ];
+        }
+        
+        // Générer un nom de fichier unique
+        $basename = pathinfo($file['name'], PATHINFO_FILENAME);
+        $basename = preg_replace('/[^a-zA-Z0-9-_]/', '_', $basename);
+        $basename = substr($basename, 0, 50);
+        $filename = $basename . '_' . time() . '_' . rand(1000, 9999) . '.' . $extension;
+        
+        // Chemin complet
+        $filepath = $upload_dir . '/' . $filename;
+        
+        // Déplacer le fichier
+        if (!move_uploaded_file($file['tmp_name'], $filepath)) {
+            return [
+                'success' => false,
+                'filename' => null,
+                'message' => 'Erreur lors du déplacement du fichier.'
+            ];
+        }
+        
+        return [
+            'success' => true,
+            'filename' => $filename,
+            'message' => 'Fichier téléchargé avec succès.'
+        ];
+    }
+}
+
+// Les autres fonctions...
+if (!function_exists('deleteFile')) {
+    function deleteFile($filepath) {
+        if (file_exists($filepath) && is_file($filepath)) {
+            return unlink($filepath);
+        }
+        return false;
+    }
+}
+
+if (!function_exists('formatFileSize')) {
+    function formatFileSize($bytes, $precision = 2) {
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        $bytes = max($bytes, 0);
+        $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+        $pow = min($pow, count($units) - 1);
+        $bytes /= pow(1024, $pow);
+        return round($bytes, $precision) . ' ' . $units[$pow];
+    }
+}
+
+if (!function_exists('getMimeType')) {
+    function getMimeType($filename) {
+        $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+        $mime_types = [
+            'pdf' => 'application/pdf',
+            'doc' => 'application/msword',
+            'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'xls' => 'application/vnd.ms-excel',
+            'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'ppt' => 'application/vnd.ms-powerpoint',
+            'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+            'txt' => 'text/plain',
+            'zip' => 'application/zip',
+            'mp4' => 'video/mp4',
+            'avi' => 'video/x-msvideo',
+            'mov' => 'video/quicktime',
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'png' => 'image/png',
+            'gif' => 'image/gif',
+            'svg' => 'image/svg+xml',
+        ];
+        return $mime_types[$extension] ?? 'application/octet-stream';
+    }
+}
+
+if (!function_exists('sanitizeFilename')) {
+    function sanitizeFilename($filename) {
+        $filename = preg_replace('/[^a-zA-Z0-9._-]/', '_', $filename);
+        $filename = preg_replace('/_+/', '_', $filename);
+        return substr($filename, 0, 255);
+    }
+}
+
 require_once __DIR__ . '/../../../config/database.php';
 
 // Démarrer la session si ce n'est pas déjà fait

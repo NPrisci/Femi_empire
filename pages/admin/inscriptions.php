@@ -214,48 +214,199 @@ function getPaymentLabel($status) {
     }
 }
 ?>
+<style>
+/* =========================================================
+   STATISTIQUES - INSCRIPTIONS
+   ========================================================= */
+
+.inscriptions-stats,
+.inscriptions-payment-stats {
+    width: 100%;
+    box-sizing: border-box;
+    display: grid;
+    gap: 12px;
+}
+
+.inscriptions-stats {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    margin-bottom: 16px;
+}
+
+.inscriptions-payment-stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-bottom: 16px;
+}
+
+/* Empêche les cartes de dépasser */
+.inscriptions-stats .stat-card,
+.inscriptions-payment-stats .stat-card {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+    overflow: hidden;
+}
+
+/* Texte */
+.inscriptions-stats .stat-label,
+.inscriptions-payment-stats .stat-label {
+    overflow-wrap: break-word;
+    word-break: normal;
+}
+
+.inscriptions-stats .stat-number,
+.inscriptions-payment-stats .stat-number {
+    line-height: 1.2;
+}
+
+/* Carte neutre */
+.inscriptions-stat-neutral {
+    background: var(--bg);
+    border-color: var(--text-light);
+}
+
+
+/* =========================================================
+   TABLETTE
+   ========================================================= */
+
+@media (max-width: 1000px) {
+
+    .inscriptions-stats {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .inscriptions-payment-stats {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    .inscriptions-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .inscriptions-payment-stats {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .inscriptions-stats .stat-card,
+    .inscriptions-payment-stats .stat-card {
+        padding: 12px;
+        min-height: auto;
+    }
+
+    .inscriptions-stats .stat-number,
+    .inscriptions-payment-stats .stat-number {
+        font-size: 22px;
+    }
+
+    .inscriptions-stats .stat-label,
+    .inscriptions-payment-stats .stat-label {
+        font-size: 12px;
+        line-height: 1.35;
+    }
+}
+
+
+/* =========================================================
+   PETIT MOBILE
+   ========================================================= */
+
+@media (max-width: 420px) {
+
+    .inscriptions-stats {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .inscriptions-payment-stats {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .inscriptions-stats .stat-card,
+    .inscriptions-payment-stats .stat-card {
+        width: 100%;
+        padding: 12px 14px;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .inscriptions-stats .stat-number,
+    .inscriptions-payment-stats .stat-number {
+        font-size: 24px;
+        flex-shrink: 0;
+    }
+
+    .inscriptions-stats .stat-label,
+    .inscriptions-payment-stats .stat-label {
+        text-align: right;
+        font-size: 12px;
+    }
+}
+</style>
 
 <div class="admin-content">
 
     <!-- Statistiques de Progression -->
-    <div class="stats-grid" style="grid-template-columns:repeat(5,1fr);margin-bottom:16px;">
-        <div class="stat-card success">
-            <div class="stat-number"><?= $stats_progression['termine'] ?></div>
-            <div class="stat-label">🏆 Terminées (100%)</div>
-        </div>
-        <div class="stat-card info">
-            <div class="stat-number"><?= $stats_progression['avance'] ?></div>
-            <div class="stat-label">🚀 Bien avancées (50-99%)</div>
-        </div>
-        <div class="stat-card warning">
-            <div class="stat-number"><?= $stats_progression['encours'] ?></div>
-            <div class="stat-label">📖 En cours (1-49%)</div>
-        </div>
-        <div class="stat-card" style="background:var(--bg);border-color:var(--text-light);">
-            <div class="stat-number"><?= $stats_progression['pascommence'] ?></div>
-            <div class="stat-label">⏳ Pas commencé (0%)</div>
-        </div>
-        <div class="stat-card primary">
-            <div class="stat-number"><?= $total_inscriptions ?></div>
-            <div class="stat-label">📊 Total</div>
-        </div>
+<div class="inscriptions-stats">
+    <div class="stat-card success">
+        <div class="stat-number"><?= $stats_progression['termine'] ?></div>
+        <div class="stat-label">🏆 Terminées (100%)</div>
     </div>
 
-    <!-- Statistiques de Paiement -->
-    <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:16px;">
-        <div class="stat-card success">
-            <div class="stat-number"><?= $stats_paiement['payee'] ?? 0 ?></div>
-            <div class="stat-label">💰 Payées</div>
-        </div>
-        <div class="stat-card warning">
-            <div class="stat-number"><?= $stats_paiement['en_attente'] ?? 0 ?></div>
-            <div class="stat-label">⏳ En attente</div>
-        </div>
-        <div class="stat-card danger" style="border-color:#ef4444;">
-            <div class="stat-number"><?= $stats_paiement['annulee'] ?? 0 ?></div>
-            <div class="stat-label">❌ Annulées</div>
-        </div>
+    <div class="stat-card info">
+        <div class="stat-number"><?= $stats_progression['avance'] ?></div>
+        <div class="stat-label">🚀 Bien avancées (50-99%)</div>
     </div>
+
+    <div class="stat-card warning">
+        <div class="stat-number"><?= $stats_progression['encours'] ?></div>
+        <div class="stat-label">📖 En cours (1-49%)</div>
+    </div>
+
+    <div class="stat-card inscriptions-stat-neutral">
+        <div class="stat-number"><?= $stats_progression['pascommence'] ?></div>
+        <div class="stat-label">⏳ Pas commencé (0%)</div>
+    </div>
+
+    <div class="stat-card primary">
+        <div class="stat-number"><?= $total_inscriptions ?></div>
+        <div class="stat-label">📊 Total</div>
+    </div>
+</div>
+
+<!-- Statistiques de Paiement -->
+<div class="inscriptions-payment-stats">
+    <div class="stat-card success">
+        <div class="stat-number"><?= $stats_paiement['payee'] ?? 0 ?></div>
+        <div class="stat-label">💰 Payées</div>
+    </div>
+
+    <div class="stat-card warning">
+        <div class="stat-number"><?= $stats_paiement['en_attente'] ?? 0 ?></div>
+        <div class="stat-label">⏳ En attente</div>
+    </div>
+
+    <div class="stat-card danger">
+        <div class="stat-number"><?= $stats_paiement['annulee'] ?? 0 ?></div>
+        <div class="stat-label">❌ Annulées</div>
+    </div>
+</div>
+
 
     <!-- Filtres -->
     <div class="card">

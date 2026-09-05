@@ -69,10 +69,6 @@ function uploadFile($file, $uploadDir, $allowedExtensions = ['jpg', 'jpeg', 'png
                     <span class="nav-icon">📚</span>
                     <span>Formations</span>
                 </a>
-                <a href="programmes.php" class="<?= $current_page == 'programmes.php' ? 'active' : '' ?>">
-                    <span class="nav-icon">📝</span>
-                    <span>Programmes</span>
-                </a>
                 <a href="inscriptions.php" class="<?= $current_page == 'inscriptions.php' ? 'active' : '' ?>">
                     <span class="nav-icon">📋</span>
                     <span>Inscriptions</span>
@@ -119,7 +115,6 @@ function uploadFile($file, $uploadDir, $allowedExtensions = ['jpg', 'jpeg', 'png
                         $titles = [
                             'index.php' => 'Tableau de bord',
                             'formations.php' => 'Gestion des formations',
-                            'programmes.php' => 'Gestion des programmes',
                             'inscriptions.php' => 'Gestion des inscriptions',
                             'utilisateurs.php' => 'Gestion des utilisateurs',
                             'paiements.php' => 'Gestion des paiements',

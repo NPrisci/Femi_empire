@@ -50,7 +50,6 @@ if (session_status() == PHP_SESSION_NONE) {
                         <li><a href="?page=about">About</a></li>
                         <li><a href="?page=service">Service</a></li>
                         <li><a href="?page=formation">Formation</a></li>
-                        <li><a href="?page=client">Client</a></li>
                     </ul>
                 </div>
 

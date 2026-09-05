@@ -4,7 +4,7 @@
 require_once __DIR__ . '/includes/header.php';
 
 $pdo = getDB();
-$programme_id = isset($_GET['programme_id']) ? (int)$_GET['programme_id'] : 0;
+$formation_id = isset($_GET['formation_id']) ? (int)$_GET['formation_id'] : 0;
 
 // --- Traitement des actions ---
 $action = $_GET['action'] ?? 'list';
@@ -30,7 +30,7 @@ if ($action === 'delete' && $id > 0) {
     } catch (PDOException $e) {
         setFlash('error', 'Erreur lors de la suppression : ' . $e->getMessage());
     }
-    header('Location: supports.php' . ($programme_id ? '?programme_id=' . $programme_id : ''));
+    header('Location: supports.php' . ($formation_id ? '?formation_id=' . $formation_id : ''));
     exit;
 }
 
@@ -40,11 +40,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'save') {
     $type = sanitize($_POST['type'] ?? 'document');
     $lien_externe = sanitize($_POST['lien_externe'] ?? '');
     $edit_id = isset($_POST['edit_id']) ? (int)$_POST['edit_id'] : 0;
-    $programme_id = isset($_POST['programme_id']) ? (int)$_POST['programme_id'] : 0;
+    $formation_id = isset($_POST['formation_id']) ? (int)$_POST['formation_id'] : 0;
     
     $errors = [];
     if (empty($titre)) $errors[] = 'Le titre est obligatoire.';
-    if ($programme_id <= 0) $errors[] = 'Programme invalide.';
+    if ($formation_id <= 0) $errors[] = 'Formation invalide.';
     
     // Gestion du fichier
     $fichier_name = null;
@@ -81,12 +81,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'save') {
                 setFlash('success', 'Support modifié avec succès.');
             } else {
                 // Ajout
-                $sql = "INSERT INTO supports (programme_id, titre, type, fichier, lien_externe) VALUES (?, ?, ?, ?, ?)";
+                $sql = "INSERT INTO supports (formation_id, titre, type, fichier, lien_externe) VALUES (?, ?, ?, ?, ?)";
                 $stmt = $pdo->prepare($sql);
-                $stmt->execute([$programme_id, $titre, $type, $fichier_name, $lien_externe]);
+                $stmt->execute([$formation_id, $titre, $type, $fichier_name, $lien_externe]);
                 setFlash('success', 'Support ajouté avec succès.');
             }
-            header('Location: supports.php?programme_id=' . $programme_id);
+            header('Location: supports.php?formation_id=' . $formation_id);
             exit;
         } catch (PDOException $e) {
             $error = 'Erreur : ' . $e->getMessage();
@@ -103,39 +103,30 @@ if ($action === 'edit' && $id > 0) {
     $stmt->execute([$id]);
     $edit_data = $stmt->fetch();
     if ($edit_data) {
-        $programme_id = $edit_data['programme_id'];
+        $formation_id = $edit_data['formation_id'];
     }
 }
 
-// --- Récupération du programme et de la formation ---
-$programme = null;
+// --- Récupération de la formation ---
 $formation = null;
-if ($programme_id > 0) {
-    $stmt = $pdo->prepare("SELECT * FROM programmes WHERE id = ?");
-    $stmt->execute([$programme_id]);
-    $programme = $stmt->fetch();
-    
-    if ($programme) {
-        $stmt = $pdo->prepare("SELECT titre FROM formations WHERE id = ?");
-        $stmt->execute([$programme['formation_id']]);
-        $formation = $stmt->fetch();
-    }
+if ($formation_id > 0) {
+    $stmt = $pdo->prepare("SELECT * FROM formations WHERE id = ?");
+    $stmt->execute([$formation_id]);
+    $formation = $stmt->fetch();
 }
 
 // --- Liste des supports ---
 $supports = [];
-if ($programme_id > 0) {
-    $stmt = $pdo->prepare("SELECT * FROM supports WHERE programme_id = ? ORDER BY created_at DESC");
-    $stmt->execute([$programme_id]);
+if ($formation_id > 0) {
+    $stmt = $pdo->prepare("SELECT * FROM supports WHERE formation_id = ? ORDER BY created_at DESC");
+    $stmt->execute([$formation_id]);
     $supports = $stmt->fetchAll();
 }
 
-// --- Programmes pour sélection ---
-$programmes = $pdo->query("
-    SELECT p.*, f.titre as formation_titre 
-    FROM programmes p
-    JOIN formations f ON p.formation_id = f.id
-    ORDER BY f.titre, p.ordre
+// --- Formations pour sélection ---
+$formations = $pdo->query("
+    SELECT * FROM formations 
+    ORDER BY titre
 ")->fetchAll();
 ?>
 
@@ -146,7 +137,7 @@ $programmes = $pdo->query("
     <div class="card">
         <div class="card-header">
             <h3 class="card-title"><?= $action === 'edit' ? 'Modifier' : 'Ajouter' ?> un support</h3>
-            <a href="supports.php<?= $programme_id ? '?programme_id=' . $programme_id : '' ?>" class="btn btn-sm btn-warning">← Retour</a>
+            <a href="supports.php<?= $formation_id ? '?formation_id=' . $formation_id : '' ?>" class="btn btn-sm btn-warning">← Retour</a>
         </div>
         
         <?php if (isset($error)): ?>
@@ -155,7 +146,7 @@ $programmes = $pdo->query("
         
         <form method="POST" action="supports.php?action=save" enctype="multipart/form-data">
             <input type="hidden" name="edit_id" value="<?= $edit_data['id'] ?? 0 ?>">
-            <input type="hidden" name="programme_id" value="<?= $programme_id ?>">
+            <input type="hidden" name="formation_id" value="<?= $formation_id ?>">
             
             <div class="form-group">
                 <label class="form-label">Titre *</label>
@@ -191,7 +182,7 @@ $programmes = $pdo->query("
             </div>
             
             <button type="submit" class="btn btn-primary"><?= $action === 'edit' ? 'Mettre à jour' : 'Ajouter' ?></button>
-            <a href="supports.php<?= $programme_id ? '?programme_id=' . $programme_id : '' ?>" class="btn btn-warning">Annuler</a>
+            <a href="supports.php<?= $formation_id ? '?formation_id=' . $formation_id : '' ?>" class="btn btn-warning">Annuler</a>
         </form>
     </div>
     
@@ -201,29 +192,29 @@ $programmes = $pdo->query("
         <div class="card-header">
             <h3 class="card-title">
                 Supports
-                <?php if ($programme): ?>
-                de <span style="color:var(--primary);"><?= htmlspecialchars($programme['titre']) ?></span>
+                <?php if ($formation): ?>
+                de <span style="color:var(--primary);"><?= htmlspecialchars($formation['titre']) ?></span>
                 <?php endif; ?>
             </h3>
             <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                <select class="form-control form-select" style="width:auto;padding:6px 12px;" onchange="window.location.href='supports.php?programme_id='+this.value">
-                    <option value="">Changer de programme</option>
-                    <?php foreach ($programmes as $p): ?>
-                    <option value="<?= $p['id'] ?>" <?= $programme_id == $p['id'] ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($p['formation_titre']) ?> - <?= htmlspecialchars($p['titre']) ?>
+                <select class="form-control form-select" style="width:auto;padding:6px 12px;" onchange="window.location.href='supports.php?formation_id='+this.value">
+                    <option value="">Changer de formation</option>
+                    <?php foreach ($formations as $f): ?>
+                    <option value="<?= $f['id'] ?>" <?= $formation_id == $f['id'] ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($f['titre']) ?>
                     </option>
                     <?php endforeach; ?>
                 </select>
-                <?php if ($programme_id > 0): ?>
-                <a href="supports.php?action=add&programme_id=<?= $programme_id ?>" class="btn btn-primary">➕ Ajouter</a>
+                <?php if ($formation_id > 0): ?>
+                <a href="supports.php?action=add&formation_id=<?= $formation_id ?>" class="btn btn-primary">➕ Ajouter</a>
                 <?php endif; ?>
             </div>
         </div>
         
-        <?php if ($programme_id == 0): ?>
-        <p style="color:var(--text-light);">Veuillez sélectionner un programme pour voir ses supports.</p>
+        <?php if ($formation_id == 0): ?>
+        <p style="color:var(--text-light);">Veuillez sélectionner une formation pour voir ses supports.</p>
         <?php elseif (empty($supports)): ?>
-        <p style="color:var(--text-light);">Aucun support pour ce programme. <a href="supports.php?action=add&programme_id=<?= $programme_id ?>">Ajouter un support</a></p>
+        <p style="color:var(--text-light);">Aucun support pour cette formation. <a href="supports.php?action=add&formation_id=<?= $formation_id ?>">Ajouter un support</a></p>
         <?php else: ?>
         <div class="table-wrapper">
             <table>
@@ -256,8 +247,8 @@ $programmes = $pdo->query("
                         </td>
                         <td><?= date('d/m/Y', strtotime($s['created_at'])) ?></td>
                         <td>
-                            <a href="supports.php?action=edit&id=<?= $s['id'] ?>&programme_id=<?= $programme_id ?>" class="btn btn-sm btn-primary">✏️</a>
-                            <a href="supports.php?action=delete&id=<?= $s['id'] ?>&programme_id=<?= $programme_id ?>" class="btn btn-sm btn-danger delete-btn">🗑️</a>
+                            <a href="supports.php?action=edit&id=<?= $s['id'] ?>&formation_id=<?= $formation_id ?>" class="btn btn-sm btn-primary">✏️</a>
+                            <a href="supports.php?action=delete&id=<?= $s['id'] ?>&formation_id=<?= $formation_id ?>" class="btn btn-sm btn-danger delete-btn">🗑️</a>
                         </td>
                     </tr>
                     <?php endforeach; ?>

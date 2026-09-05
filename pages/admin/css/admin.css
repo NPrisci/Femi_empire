@@ -1,4 +1,3 @@
-/* pages/admin/css/admin.css */
 :root {
     --primary: #e2836a;
     --primary-dark: #c96b54;
@@ -419,6 +418,12 @@ table tr:hover td {
     color: #fff;
 }
 
+.btn-white {
+    background: #fff;
+    color: #333;
+    border: 1px solid var(--border);
+}
+
 .btn-danger:hover {
     background: #dc2626;
 }
@@ -603,5 +608,1486 @@ textarea.form-control {
 
     .topbar-right .user-name {
         display: none;
+    }
+}
+
+/* =========================================================
+   RESPONSIVE GLOBAL
+   Compatible : grands écrans, laptops, tablettes, mobiles
+   ========================================================= */
+
+/* Empêche les débordements horizontaux */
+html {
+    width: 100%;
+    overflow-x: hidden;
+}
+
+body {
+    width: 100%;
+    min-width: 0;
+    overflow-x: hidden;
+}
+
+/* Images et médias */
+img,
+video,
+iframe {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Les tableaux restent scrollables sur petit écran */
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-wrapper table {
+    min-width: 650px;
+}
+
+/* =========================================================
+   DASHBOARD GRID
+   ========================================================= */
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+}
+
+/* =========================================================
+   STATS
+   ========================================================= */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.stat-card {
+    min-width: 0;
+    overflow: hidden;
+}
+
+.stat-card .stat-number {
+    overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   CARTES
+   ========================================================= */
+
+.card {
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+}
+
+.card-header {
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.card-title {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   ACTIONS RAPIDES
+   ========================================================= */
+
+.quick-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.quick-actions .btn {
+    flex: 0 1 auto;
+}
+
+/* =========================================================
+   FORMATIONS PAR CATÉGORIE
+   ========================================================= */
+
+.formations-categories {
+    margin-top: 24px;
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(
+        auto-fit,
+        minmax(150px, 1fr)
+    );
+    gap: 16px;
+}
+
+.category-card {
+    background: var(--bg);
+    padding: 16px;
+    border-radius: 8px;
+    text-align: center;
+    min-width: 0;
+}
+
+.category-card .category-number {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.category-card .category-name {
+    font-size: 13px;
+    color: var(--text-light);
+    overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   BOUTONS
+   ========================================================= */
+
+.btn {
+    max-width: 100%;
+    white-space: normal;
+    text-align: center;
+}
+
+/* =========================================================
+   FORMULAIRES
+   ========================================================= */
+
+.form-control,
+.form-select,
+textarea,
+input,
+select {
+    max-width: 100%;
+}
+
+.form-row {
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+}
+
+/* =========================================================
+   GRAND ÉCRAN
+   ========================================================= */
+
+@media (min-width: 1400px) {
+
+    .admin-content {
+        max-width: 1600px;
+        margin: 0 auto;
+        padding: 40px;
+    }
+
+    .stats-grid {
+        gap: 24px;
+    }
+
+    .dashboard-grid {
+        gap: 28px;
+    }
+}
+
+/* =========================================================
+   LAPTOP / ÉCRAN MOYEN
+   ========================================================= */
+
+@media (max-width: 1200px) {
+
+    .admin-sidebar {
+        width: 230px;
+    }
+
+    .admin-main {
+        margin-left: 230px;
+    }
+
+    .stats-grid {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+
+    .dashboard-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .admin-content {
+        padding: 28px;
+    }
+
+    .admin-topbar {
+        padding: 14px 28px;
+    }
+}
+
+/* =========================================================
+   TABLETTE PAYSAGE
+   ========================================================= */
+
+@media (max-width: 992px) {
+
+    .admin-sidebar {
+        width: 220px;
+    }
+
+    .admin-main {
+        margin-left: 220px;
+    }
+
+    .stats-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .admin-content {
+        padding: 24px;
+    }
+}
+
+/* =========================================================
+   TABLETTE PORTRAIT
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    /* Sidebar */
+
+    .admin-sidebar {
+        width: 280px;
+        max-width: 85vw;
+        transform: translateX(-100%);
+    }
+
+    .admin-sidebar.open {
+        transform: translateX(0);
+    }
+
+    .admin-main {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    /* Topbar */
+
+    .admin-topbar {
+        padding: 12px 16px;
+        min-height: 60px;
+    }
+
+    .topbar-left {
+        gap: 10px;
+        min-width: 0;
+    }
+
+    .page-title {
+        font-size: 19px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .topbar-right {
+        gap: 8px;
+    }
+
+    /* Contenu */
+
+    .admin-content {
+        padding: 20px 16px;
+    }
+
+    /* Stats */
+
+    .stats-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 14px;
+        margin-bottom: 24px;
+    }
+
+    .stat-card {
+        padding: 16px;
+    }
+
+    .stat-card .stat-number {
+        font-size: 24px;
+    }
+
+    .stat-card .stat-label {
+        font-size: 12px;
+    }
+
+    /* Dashboard */
+
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    /* Cards */
+
+    .card {
+        padding: 18px;
+        margin-bottom: 16px;
+    }
+
+    .card-header {
+        align-items: flex-start;
+    }
+
+    /* Tables */
+
+    .table-wrapper {
+        margin-left: -18px;
+        margin-right: -18px;
+        width: calc(100% + 36px);
+    }
+
+    .table-wrapper table {
+        min-width: 650px;
+    }
+
+    table th,
+    table td {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+
+    /* Formulaires */
+
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    /* Boutons */
+
+    .quick-actions {
+        flex-direction: column;
+    }
+
+    .quick-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Modal */
+
+    .modal-overlay {
+        padding: 12px;
+    }
+
+    .modal {
+        width: 100%;
+        max-width: 100%;
+        max-height: 94vh;
+    }
+
+    .modal-header {
+        padding: 16px 18px;
+    }
+
+    .modal-body {
+        padding: 18px;
+    }
+
+    .modal-footer {
+        padding: 14px 18px;
+        flex-wrap: wrap;
+    }
+
+    .modal-footer .btn {
+        flex: 1;
+        min-width: 120px;
+    }
+
+    /* Catégories */
+
+    .category-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+
+        gap: 10px;
+    }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 576px) {
+
+    .admin-content {
+        padding: 16px 12px;
+    }
+
+    .admin-topbar {
+        padding: 10px 12px;
+    }
+
+    .page-title {
+        font-size: 17px;
+    }
+
+    /* Stats une colonne */
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .stat-card {
+        padding: 16px 18px;
+    }
+
+    .stat-card .stat-number {
+        font-size: 26px;
+    }
+
+    /* Cards */
+
+    .card {
+        padding: 16px;
+        border-radius: 10px;
+    }
+
+    .card-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .card-header .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .card-title {
+        font-size: 17px;
+    }
+
+    /* Tables */
+
+    .table-wrapper {
+        margin-left: -16px;
+        margin-right: -16px;
+        width: calc(100% + 32px);
+    }
+
+    .table-wrapper table {
+        min-width: 600px;
+    }
+
+    /* Catégories */
+
+    .category-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .category-card {
+        padding: 12px 8px;
+    }
+
+    .category-card .category-number {
+        font-size: 24px;
+    }
+
+    /* Actions */
+
+    .quick-actions .btn {
+        width: 100%;
+    }
+
+    /* Utilisateur */
+
+    .topbar-right .user-name {
+        display: none;
+    }
+
+    .user-avatar {
+        width: 34px;
+        height: 34px;
+        font-size: 13px;
+    }
+}
+
+/* =========================================================
+   PETIT MOBILE
+   ========================================================= */
+
+@media (max-width: 400px) {
+
+    .admin-content {
+        padding: 12px 10px;
+    }
+
+    .admin-topbar {
+        padding: 9px 10px;
+    }
+
+    .page-title {
+        font-size: 16px;
+    }
+
+    .stats-grid {
+        gap: 10px;
+    }
+
+    .stat-card {
+        padding: 14px;
+    }
+
+    .stat-card .stat-number {
+        font-size: 23px;
+    }
+
+    .stat-card .stat-label {
+        font-size: 11px;
+    }
+
+    .card {
+        padding: 14px;
+    }
+
+    .category-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-footer {
+        flex-direction: column;
+    }
+
+    .modal-footer .btn {
+        width: 100%;
+    }
+}
+
+/* =========================================================
+   TRÈS PETIT ÉCRAN
+   ========================================================= */
+
+@media (max-width: 320px) {
+
+    .admin-content {
+        padding: 10px 8px;
+    }
+
+    .page-title {
+        font-size: 15px;
+    }
+
+    .sidebar-toggle {
+        font-size: 21px;
+    }
+
+    .stat-card .stat-number {
+        font-size: 21px;
+    }
+
+    .card-title {
+        font-size: 16px;
+    }
+}
+
+
+/* =========================================================
+   RESPONSIVE - PAGE FORMATIONS
+   ========================================================= */
+
+/* Conteneur général */
+.admin-content {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+/* Les cartes ne doivent jamais dépasser l'écran */
+.card {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+/* =========================================================
+   TABLEAUX
+   ========================================================= */
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-wrapper table,
+.card > table,
+.table {
+    width: 100%;
+    min-width: 700px;
+}
+
+/* Évite que les boutons cassent la mise en page */
+table td,
+table th {
+    white-space: nowrap;
+}
+
+/* Les descriptions peuvent être plus souples */
+table td:nth-child(2) {
+    white-space: normal;
+}
+
+/* =========================================================
+   FORMULAIRES
+   ========================================================= */
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.form-group {
+    min-width: 0;
+}
+
+.form-control {
+    max-width: 100%;
+    min-width: 0;
+}
+
+/* =========================================================
+   ONGLETS FORMATION
+   ========================================================= */
+
+.formation-tabs {
+    display: flex;
+    gap: 4px;
+    border-bottom: 2px solid var(--border);
+    margin-bottom: 16px;
+    padding: 0 16px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.formation-tabs a {
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+/* =========================================================
+   FORMULAIRE SUPPORT / EXERCICE
+   ========================================================= */
+
+.support-form,
+.exercice-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.support-form > *,
+.exercice-form > * {
+    min-width: 0;
+}
+
+/* =========================================================
+   IMAGES
+   ========================================================= */
+
+img {
+    max-width: 100%;
+}
+
+#imagePreview {
+    max-width: 100%;
+    height: auto;
+}
+
+/* =========================================================
+   BOUTONS
+   ========================================================= */
+
+.btn {
+    max-width: 100%;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* =========================================================
+   TABLETTE
+   ========================================================= */
+
+@media (max-width: 992px) {
+
+    .admin-content {
+        padding: 24px;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .card {
+        padding: 20px;
+    }
+
+    .card-header {
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 768px) {
+
+    .admin-content {
+        padding: 16px;
+        width: 100%;
+    }
+
+    .card {
+        padding: 16px;
+        border-radius: 10px;
+    }
+
+    /* Formulaires en une seule colonne */
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    /* Support et exercice */
+    .support-form,
+    .exercice-form {
+        grid-template-columns: 1fr;
+    }
+
+    /* Onglets */
+    .formation-tabs {
+        padding: 0;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .formation-tabs a {
+        font-size: 12px;
+        padding: 8px 12px !important;
+    }
+
+    /* Header des cartes */
+    .card-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .card-header .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Boutons */
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .action-buttons .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* Champs */
+    .form-control {
+        font-size: 16px;
+        min-height: 44px;
+    }
+
+    textarea.form-control {
+        min-height: 120px;
+    }
+
+    /* Images */
+    #imagePreview {
+        max-width: 100%;
+        max-height: 180px !important;
+    }
+
+    /* Tableaux */
+    .table-wrapper {
+        margin-left: -16px;
+        margin-right: -16px;
+        width: calc(100% + 32px);
+    }
+
+    .table-wrapper table {
+        min-width: 700px;
+    }
+
+    /* Texte des titres */
+    .card-title {
+        font-size: 17px;
+    }
+}
+
+/* =========================================================
+   PETIT MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+
+    .admin-content {
+        padding: 10px;
+    }
+
+    .card {
+        padding: 12px;
+        margin-bottom: 16px;
+    }
+
+    .card-title {
+        font-size: 16px;
+    }
+
+    .btn {
+        font-size: 12px;
+        padding: 8px 12px;
+    }
+
+    /* Onglets plus compacts */
+    .formation-tabs a {
+        font-size: 11px;
+        padding: 7px 10px !important;
+    }
+
+    /* Images des formations */
+    table img {
+        width: 40px !important;
+        height: 40px !important;
+    }
+
+    /* Permet aux boutons d'actions de rester visibles */
+    table td:last-child {
+        white-space: nowrap;
+    }
+}
+
+/* =========================================================
+   TRÈS PETITS ÉCRANS
+   ========================================================= */
+
+@media (max-width: 360px) {
+
+    .admin-content {
+        padding: 8px;
+    }
+
+    .card {
+        padding: 10px;
+    }
+
+    .formation-tabs a {
+        font-size: 10px;
+        padding: 6px 8px !important;
+    }
+
+    .form-label {
+        font-size: 12px;
+    }
+}
+
+
+
+/* =========================================================
+   RESPONSIVE - PAGE INSCRIPTIONS
+   ========================================================= */
+
+/* Conteneur général */
+.admin-content {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+/* =========================
+   STATISTIQUES
+   ========================= */
+
+.inscriptions-stats {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.inscriptions-payment-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.inscriptions-stats .stat-card,
+.inscriptions-payment-stats .stat-card {
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+/* =========================
+   FILTRES
+   ========================= */
+
+.inscriptions-filters {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+.inscriptions-filters .filter-group {
+    flex: 1 1 180px;
+    min-width: 0;
+    margin-bottom: 0;
+}
+
+.inscriptions-filters .filter-group select {
+    width: 100% !important;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.inscriptions-filter-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* =========================
+   TABLEAU
+   ========================= */
+
+.inscriptions-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.inscriptions-table-wrapper table {
+    width: 100%;
+    min-width: 850px;
+    border-collapse: collapse;
+}
+
+/* Évite que les cellules deviennent illisibles */
+.inscriptions-table-wrapper th,
+.inscriptions-table-wrapper td {
+    vertical-align: middle;
+}
+
+/* Apprenant */
+.inscriptions-user {
+    min-width: 150px;
+}
+
+/* Formation */
+.inscriptions-formation {
+    min-width: 150px;
+}
+
+/* Progression */
+.inscriptions-progress {
+    min-width: 160px;
+}
+
+/* Actions */
+.inscriptions-actions {
+    min-width: 150px;
+    white-space: nowrap;
+}
+
+.inscriptions-actions .btn {
+    margin: 2px;
+}
+
+/* =========================
+   PROGRESSION
+   ========================= */
+
+.progress-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 140px;
+}
+
+.progress-bar-container {
+    flex: 1;
+    height: 8px;
+    background: var(--bg);
+    border-radius: 4px;
+    overflow: hidden;
+    min-width: 60px;
+}
+
+.progress-percentage {
+    font-size: 13px;
+    font-weight: 700;
+    min-width: 40px;
+    text-align: right;
+}
+
+/* =========================
+   MODAL
+   ========================= */
+
+.inscriptions-modal {
+    width: calc(100% - 30px);
+    max-width: 500px;
+    max-height: calc(100vh - 30px);
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+
+.inscriptions-modal .modal-body {
+    overflow-wrap: break-word;
+}
+
+.progress-quick-buttons {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.progress-quick-buttons .btn {
+    width: 100%;
+}
+
+/* =========================
+   TABLETTE
+   ========================= */
+
+@media (max-width: 992px) {
+
+    .inscriptions-stats {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    }
+
+    .inscriptions-payment-stats {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    }
+
+    .inscriptions-filters .filter-group {
+        flex: 1 1 calc(50% - 12px);
+    }
+}
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 768px) {
+
+    /* Statistiques */
+    .inscriptions-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 8px;
+    }
+
+    .inscriptions-payment-stats {
+        grid-template-columns: 1fr !important;
+        gap: 8px;
+    }
+
+    .inscriptions-stats .stat-card,
+    .inscriptions-payment-stats .stat-card {
+        padding: 12px;
+    }
+
+    .inscriptions-stats .stat-number,
+    .inscriptions-payment-stats .stat-number {
+        font-size: 22px;
+    }
+
+    .inscriptions-stats .stat-label,
+    .inscriptions-payment-stats .stat-label {
+        font-size: 12px;
+        line-height: 1.3;
+    }
+
+    /* Filtres */
+    .inscriptions-filters {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+    }
+
+    .inscriptions-filters .filter-group {
+        width: 100%;
+        flex: none;
+    }
+
+    .inscriptions-filters .form-label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .inscriptions-filter-actions {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .inscriptions-filter-actions .btn {
+        width: 100%;
+    }
+
+    /* Cartes */
+    .card {
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* En-tête de carte */
+    .card-header {
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .card-title {
+        font-size: 17px;
+    }
+
+    /* Tableau */
+    .inscriptions-table-wrapper {
+        margin-left: -1px;
+        margin-right: -1px;
+        width: calc(100% + 2px);
+    }
+
+    .inscriptions-table-wrapper table {
+        min-width: 800px;
+    }
+
+    /* Modal */
+    .inscriptions-modal {
+        width: calc(100% - 20px);
+        max-height: calc(100vh - 20px);
+        margin: 10px;
+    }
+
+    .inscriptions-modal .modal-header {
+        padding: 14px;
+    }
+
+    .inscriptions-modal .modal-body {
+        padding: 14px;
+    }
+
+    .inscriptions-modal .modal-footer {
+        padding: 14px;
+        flex-direction: column-reverse;
+    }
+
+    .inscriptions-modal .modal-footer .btn {
+        width: 100%;
+    }
+
+    /* Boutons rapides */
+    .progress-quick-buttons {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .progress-quick-buttons .btn:nth-child(4),
+    .progress-quick-buttons .btn:nth-child(5) {
+        grid-column: span 1;
+    }
+}
+
+/* =========================
+   PETIT MOBILE
+   ========================= */
+
+@media (max-width: 480px) {
+
+    .inscriptions-stats {
+        grid-template-columns: 1fr !important;
+    }
+
+    .inscriptions-stats .stat-card,
+    .inscriptions-payment-stats .stat-card {
+        padding: 10px;
+    }
+
+    .inscriptions-stats .stat-number,
+    .inscriptions-payment-stats .stat-number {
+        font-size: 20px;
+    }
+
+    .inscriptions-filter-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .progress-quick-buttons {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .inscriptions-modal {
+        width: calc(100% - 12px);
+        margin: 6px;
+        max-height: calc(100vh - 12px);
+    }
+
+    .inscriptions-modal .modal-title {
+        font-size: 16px;
+    }
+
+    /* Le bouton progression prend plus de place */
+    .inscriptions-actions .btn-primary {
+        display: inline-block;
+    }
+}
+
+
+/* =========================================
+   RESPONSIVE - STATISTIQUES ADMIN
+   ========================================= */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+    width: 100%;
+}
+
+.stat-card {
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Tablette */
+@media (max-width: 900px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .stats-grid {
+        grid-template-columns: 1fr !important;
+        gap: 10px;
+        margin-bottom: 12px !important;
+    }
+
+    .stat-card {
+        padding: 14px;
+        min-height: auto;
+    }
+
+    .stat-number {
+        font-size: 24px;
+    }
+
+    .stat-label {
+        font-size: 13px;
+    }
+}
+
+/* ================================
+   FILTRES UTILISATEURS
+================================ */
+
+.filters-form {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    width: 100%;
+}
+
+.filters-form .form-group {
+    margin-bottom: 0;
+}
+
+.filter-role {
+    width: 150px;
+}
+
+.filter-search {
+    flex: 1;
+    min-width: 200px;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+/* ================================
+   TABLETTE
+================================ */
+
+@media (max-width: 800px) {
+    .filter-role {
+        width: 180px;
+    }
+
+    .filter-search {
+        min-width: 250px;
+    }
+
+    .filter-actions {
+        width: 100%;
+        margin-top: 4px;
+    }
+}
+
+/* ================================
+   MOBILE
+================================ */
+
+@media (max-width: 600px) {
+
+    .filters-form {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .filter-role,
+    .filter-search {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .filter-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        width: 100%;
+        gap: 10px;
+        margin-top: 2px;
+    }
+
+    .filter-actions .btn {
+        width: 100%;
+        min-height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+
+/* =========================================
+   RESPONSIVE - PARAMÈTRES
+========================================= */
+
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+    width: 100%;
+}
+
+.settings-grid .form-group {
+    min-width: 0;
+}
+
+.settings-grid .form-control,
+.settings-grid .form-select {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.settings-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 12px;
+}
+
+/* =========================================
+   TABLETTE
+========================================= */
+
+@media (max-width: 800px) {
+    .settings-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 600px) {
+
+    .settings-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .settings-grid .form-group {
+        margin-bottom: 0;
+    }
+
+    .settings-grid .form-label {
+        display: block;
+        line-height: 1.4;
+        margin-bottom: 6px;
+    }
+
+    .settings-grid .form-label span {
+        display: block;
+        margin-top: 3px;
+    }
+
+    .settings-grid .form-control,
+    .settings-grid .form-select {
+        width: 100%;
+        min-width: 0;
+        font-size: 14px;
+    }
+
+    .settings-actions {
+        width: 100%;
+        margin-top: 18px;
+    }
+
+    .settings-actions .btn {
+        width: 100%;
+        min-height: 44px;
+        justify-content: center;
     }
 }

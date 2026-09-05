@@ -1,5 +1,4 @@
 <?php
-// pages/admin/index.php - Tableau de bord administrateur
 
 require_once __DIR__ . '/includes/header.php';
 

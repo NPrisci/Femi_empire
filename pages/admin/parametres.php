@@ -1,6 +1,4 @@
 <?php
-// pages/admin/parametres.php - Paramètres du site
-
 require_once __DIR__ . '/includes/header.php';
 
 $pdo = getDB();
@@ -82,21 +80,7 @@ $parametres = $stmt->fetchAll();
             </div>
         </form>
     </div>
-    
-    <!-- Informations système -->
-    <div class="card">
-        <div class="card-header">
-            <h3 class="card-title">🔧 Informations système</h3>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:14px;">
-            <div><strong>PHP Version :</strong> <?= phpversion() ?></div>
-            <div><strong>MySQL Version :</strong> <?= $pdo->query("SELECT VERSION()")->fetchColumn() ?></div>
-            <div><strong>Serveur :</strong> <?= $_SERVER['SERVER_SOFTWARE'] ?? 'N/A' ?></div>
-            <div><strong>Upload max size :</strong> <?= ini_get('upload_max_filesize') ?></div>
-            <div><strong>Memory limit :</strong> <?= ini_get('memory_limit') ?></div>
-            <div><strong>Max execution time :</strong> <?= ini_get('max_execution_time') ?>s</div>
-        </div>
-    </div>
+
 </div>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

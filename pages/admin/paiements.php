@@ -122,7 +122,7 @@ $ca_total = $pdo->query("SELECT SUM(montant) as total FROM commandes WHERE statu
             <div class="stat-number"><?= $stats_assoc['en_attente']['total'] ?? 0 ?></div>
             <div class="stat-label">⏳ En attente</div>
         </div>
-        <div class="stat-card danger" style="border-color:#ef4444;">
+        <div class="stat-card btn-white" style="border-color:#ef4444;">
             <div class="stat-number"><?= $stats_assoc['annulee']['total'] ?? 0 ?></div>
             <div class="stat-label">❌ Annulées</div>
         </div>
@@ -192,7 +192,7 @@ $ca_total = $pdo->query("SELECT SUM(montant) as total FROM commandes WHERE statu
                             <a href="paiements.php?action=update_status&id=<?= $cmd['id'] ?>&status=payee" class="btn btn-sm btn-success">✅ Payer</a>
                             <?php endif; ?>
                             <?php if ($cmd['status'] != 'annulee'): ?>
-                            <a href="paiements.php?action=update_status&id=<?= $cmd['id'] ?>&status=annulee" class="btn btn-sm btn-danger">❌</a>
+                            <a href="paiements.php?action=update_status&id=<?= $cmd['id'] ?>&status=annulee" class="btn btn-sm btn-white">❌</a>
                             <?php endif; ?>
                             <a href="paiements.php?action=delete&id=<?= $cmd['id'] ?>" class="btn btn-sm btn-danger delete-btn">🗑️</a>
                         </td>

@@ -111,22 +111,33 @@ foreach ($stats as $s) {
     <!-- Filtres -->
     <div class="card">
         <form method="GET" action="utilisateurs.php" style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;">
-            <div class="form-group" style="margin-bottom:0;">
-                <label class="form-label">Rôle</label>
-                <select class="form-control form-select" name="role" style="width:150px;">
-                    <option value="">Tous</option>
-                    <option value="client" <?= $filter_role == 'client' ? 'selected' : '' ?>>Client</option>
-                    <!-- <option value="formateur" <?= $filter_role == 'formateur' ? 'selected' : '' ?>>Formateur</option> -->
-                    <option value="admin" <?= $filter_role == 'admin' ? 'selected' : '' ?>>Admin</option>
-                </select>
-            </div>
-            <div class="form-group" style="margin-bottom:0;flex:1;">
-                <label class="form-label">Rechercher</label>
-                <input type="text" class="form-control" name="search" placeholder="Nom, prénom, email..." 
-                       value="<?= htmlspecialchars($search) ?>" style="min-width:200px;">
-            </div>
-            <button type="submit" class="btn btn-primary">Filtrer</button>
-            <a href="utilisateurs.php" class="btn btn-warning">Réinitialiser</a>
+           <div class="filters-form">
+
+    <div class="form-group filter-role">
+        <label class="form-label">Rôle</label>
+        <select class="form-control form-select" name="role">
+            <option value="">Tous</option>
+            <option value="client" <?= $filter_role == 'client' ? 'selected' : '' ?>>Client</option>
+            <option value="admin" <?= $filter_role == 'admin' ? 'selected' : '' ?>>Admin</option>
+        </select>
+    </div>
+
+    <div class="form-group filter-search">
+        <label class="form-label">Rechercher</label>
+        <input type="text"
+               class="form-control"
+               name="search"
+               placeholder="Nom, prénom, email..."
+               value="<?= htmlspecialchars($search) ?>">
+    </div>
+
+    <div class="filter-actions">
+        <button type="submit" class="btn btn-primary">Filtrer</button>
+        <a href="utilisateurs.php" class="btn btn-warning">Réinitialiser</a>
+    </div>
+
+</div>
+
         </form>
     </div>
 
