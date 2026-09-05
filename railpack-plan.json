@@ -1,0 +1,15 @@
+{
+  "providers": ["php"],
+  "phases": {
+    "setup": {
+      "nixPkgs": ["php"],
+      "nixPkgsArchive": "https://github.com/NixOS/nixpkgs/archive/nixos-24.11.tar.gz"
+    },
+    "install": {
+      "cmds": [
+        "docker-php-ext-install pdo_mysql",
+        "docker-php-ext-enable pdo_mysql"
+      ]
+    }
+  }
+}
