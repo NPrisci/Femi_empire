@@ -8,8 +8,6 @@ function getDB(): PDO
 
     if ($pdo === null) {
 
-        // Railway fournit MYSQLHOST, MYSQLPORT, etc.
-        // En local, on utilise les valeurs classiques XAMPP/WAMP.
         $dbHost = getenv('MYSQLHOST') ?: 'localhost';
         $dbPort = getenv('MYSQLPORT') ?: '3306';
         $dbName = getenv('MYSQLDATABASE') ?: 'femiempire';
