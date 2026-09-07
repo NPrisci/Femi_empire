@@ -1740,14 +1740,14 @@ function formatPrix($prix): string
 
     <!-- ==========================================================
      PAGE
-=========================================================== -->
+    =========================================================== -->
 
     <div class="page-wrap">
 
 
         <!-- ======================================================
          SIDEBAR
-    ======================================================= -->
+        ======================================================= -->
 
         <aside class="sidebar">
 
@@ -2523,7 +2523,7 @@ function formatPrix($prix): string
 
 
                                         <a
-                                            href="??page=formation_detail&id=<?= $formationId ?>"
+                                            href="?page=formation_detail&id=<?= $formationId ?>"
                                             class="btn-continuer">
                                             Continuer →
                                         </a>
