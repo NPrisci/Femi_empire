@@ -8,25 +8,51 @@ function getDB(): PDO
 
     if ($pdo === null) {
 
-        
-        $dbHost = getenv('MYSQLHOST') ?: 'localhost';
-        $dbPort = getenv('MYSQLPORT') ?: '3306';
-        $dbName = getenv('MYSQLDATABASE') ?: 'femiempire';
-        $dbUser = getenv('MYSQLUSER') ?: 'root';
-        $dbPass = getenv('MYSQLPASSWORD') ?: '';
+        /*
+         * Railway utilise actuellement les variables DB_* :
+         *
+         * DB_HOST     = ${{MySQL.MYSQLHOST}}
+         * DB_PORT     = ${{MySQL.MYSQLPORT}}
+         * DB_NAME     = ${{MySQL.MYSQLDATABASE}}
+         * DB_USER     = ${{MySQL.MYSQLUSER}}
+         * DB_PASSWORD = ${{MySQL.MYSQLPASSWORD}}
+         *
+         * Les MYSQL* sont conservées en fallback.
+         */
 
+        $dbHost = getenv('DB_HOST') ?: getenv('MYSQLHOST');
+        $dbPort = getenv('DB_PORT') ?: getenv('MYSQLPORT') ?: '3306';
+        $dbName = getenv('DB_NAME') ?: getenv('MYSQLDATABASE');
+        $dbUser = getenv('DB_USER') ?: getenv('MYSQLUSER');
+        $dbPass = getenv('DB_PASSWORD') ?: getenv('MYSQLPASSWORD');
+
+        /*
+         * Vérification de la configuration
+         */
         if (!$dbHost || !$dbName || !$dbUser || !$dbPass) {
-            error_log('Variables MySQL Railway manquantes');
-            error_log('MYSQLHOST=' . ($dbHost ?: 'NOT_SET'));
-            error_log('MYSQLPORT=' . ($dbPort ?: 'NOT_SET'));
-            error_log('MYSQLDATABASE=' . ($dbName ?: 'NOT_SET'));
-            error_log('MYSQLUSER=' . ($dbUser ?: 'NOT_SET'));
-            error_log('MYSQLPASSWORD=' . ($dbPass ? 'SET' : 'NOT_SET'));
 
-            throw new RuntimeException('Configuration MySQL manquante');
+            error_log('=== CONFIGURATION MYSQL MANQUANTE ===');
+            error_log('DB_HOST=' . ($dbHost ?: 'NOT_SET'));
+            error_log('DB_PORT=' . ($dbPort ?: 'NOT_SET'));
+            error_log('DB_NAME=' . ($dbName ?: 'NOT_SET'));
+            error_log('DB_USER=' . ($dbUser ?: 'NOT_SET'));
+            error_log('DB_PASSWORD=' . ($dbPass ? 'SET' : 'NOT_SET'));
+
+            throw new RuntimeException(
+                'Configuration MySQL manquante'
+            );
         }
-        
-        $dsn = "mysql:host={$dbHost};port={$dbPort};dbname={$dbName};charset=" . DB_CHARSET;
+
+        /*
+         * Construction de la connexion PDO
+         */
+        $dsn = sprintf(
+            'mysql:host=%s;port=%s;dbname=%s;charset=%s',
+            $dbHost,
+            $dbPort,
+            $dbName,
+            DB_CHARSET
+        );
 
         $options = [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
@@ -35,16 +61,47 @@ function getDB(): PDO
         ];
 
         try {
-            $pdo = new PDO($dsn, $dbUser, $dbPass, $options);
+
+            $pdo = new PDO(
+                $dsn,
+                $dbUser,
+                $dbPass,
+                $options
+            );
+
+            /*
+             * Log utile pour vérifier Railway sans exposer
+             * le mot de passe.
+             */
+            error_log(
+                sprintf(
+                    'Connexion MySQL réussie : %s:%s/%s',
+                    $dbHost,
+                    $dbPort,
+                    $dbName
+                )
+            );
+
         } catch (PDOException $e) {
-            error_log('Erreur DB : ' . $e->getMessage());
+
+            /*
+             * Le mot de passe n'est jamais écrit dans les logs.
+             */
+            error_log(
+                'Erreur DB : ' . $e->getMessage()
+            );
 
             http_response_code(500);
 
-            die(json_encode([
-                'success' => false,
-                'message' => 'Erreur de connexion à la base de données.'
-            ]));
+            header('Content-Type: application/json; charset=utf-8');
+
+            die(json_encode(
+                [
+                    'success' => false,
+                    'message' => 'Erreur de connexion à la base de données.'
+                ],
+                JSON_UNESCAPED_UNICODE
+            ));
         }
     }
 
