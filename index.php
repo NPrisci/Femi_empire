@@ -2,6 +2,40 @@
 ob_start();
 session_start();
 
+/*
+|--------------------------------------------------------------------------
+| DÉCONNEXION
+|--------------------------------------------------------------------------
+*/
+if (isset($_GET['action']) && $_GET['action'] === 'logout') {
+
+    // Vider les données de session
+    $_SESSION = [];
+
+    // Supprimer le cookie de session
+    if (ini_get('session.use_cookies')) {
+        $params = session_get_cookie_params();
+
+        setcookie(
+            session_name(),
+            '',
+            time() - 42000,
+            $params['path'],
+            $params['domain'],
+            $params['secure'],
+            $params['httponly']
+        );
+    }
+
+    // Détruire la session
+    session_destroy();
+
+    // Rediriger vers la page d'accueil
+    header('Location: index.php');
+    exit;
+}
+
+
 $isLoggedIn = isset($_SESSION['user_id']);
 $userName   = $isLoggedIn ? ($_SESSION['user_nom'] ?? 'Utilisateur') : '';
 

@@ -8,18 +8,6 @@ function getDB(): PDO
 
     if ($pdo === null) {
 
-        /*
-         * Railway utilise actuellement les variables DB_* :
-         *
-         * DB_HOST     = ${{MySQL.MYSQLHOST}}
-         * DB_PORT     = ${{MySQL.MYSQLPORT}}
-         * DB_NAME     = ${{MySQL.MYSQLDATABASE}}
-         * DB_USER     = ${{MySQL.MYSQLUSER}}
-         * DB_PASSWORD = ${{MySQL.MYSQLPASSWORD}}
-         *
-         * Les MYSQL* sont conservées en fallback.
-         */
-
         $dbHost = getenv('DB_HOST') ?: getenv('MYSQLHOST');
         $dbPort = getenv('DB_PORT') ?: getenv('MYSQLPORT') ?: '3306';
         $dbName = getenv('DB_NAME') ?: getenv('MYSQLDATABASE');
