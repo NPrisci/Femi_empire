@@ -1,7 +1,7 @@
 <?php
 // pages/admin/exercices.php
 // Gestion des exercices
-
+require_once __DIR__ . '/includes/functions.php';
 require_once __DIR__ . '/includes/header.php';
 
 $pdo = getDB();
