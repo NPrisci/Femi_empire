@@ -1,6 +1,6 @@
 <?php
 // pages/admin/inscriptions.php - Gestion des inscriptions
-
+require_once __DIR__ . '/includes/functions.php';
 require_once __DIR__ . '/includes/header.php';
 
 $pdo = getDB();

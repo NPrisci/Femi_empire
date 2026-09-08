@@ -1,7 +1,8 @@
 <?php
 // pages/admin/utilisateurs.php - Gestion des utilisateurs
 
-require_once __DIR__ . '/includes/header.php';
+// require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/functions.php';
 
 $pdo = getDB();
 
@@ -84,6 +85,8 @@ $stats_assoc = [];
 foreach ($stats as $s) {
     $stats_assoc[$s['role']] = $s['total'];
 }
+
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <div class="admin-content">

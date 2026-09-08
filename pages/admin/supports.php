@@ -1,8 +1,8 @@
 <?php
 // pages/admin/supports.php - Gestion des supports de cours
 
-require_once __DIR__ . '/includes/header.php';
-
+// require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/functions.php';
 $pdo = getDB();
 $formation_id = isset($_GET['formation_id']) ? (int)$_GET['formation_id'] : 0;
 
@@ -128,6 +128,8 @@ $formations = $pdo->query("
     SELECT * FROM formations 
     ORDER BY titre
 ")->fetchAll();
+
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <div class="admin-content">

@@ -1,8 +1,8 @@
 <?php
 // pages/admin/realisations.php - Gestion des réalisations des apprenants
 
-require_once __DIR__ . '/includes/header.php';
-
+// require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/functions.php';
 $pdo = getDB();
 
 // --- Traitement des actions ---
@@ -101,6 +101,8 @@ $stats_assoc = [];
 foreach ($stats as $s) {
     $stats_assoc[$s['statut']] = $s['total'];
 }
+
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <div class="admin-content">
