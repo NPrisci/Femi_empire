@@ -14,90 +14,40 @@ if (!function_exists('uploadFile')) {
      * @param int $max_size Taille max en octets (défaut: 10Mo)
      * @return array ['success' => bool, 'filename' => string|null, 'message' => string]
      */
-    // function uploadFile($file, $upload_dir, $allowed_extensions = [], $max_size = 10485760) {
-    //     // Vérifier s'il y a une erreur
-    //     if ($file['error'] !== UPLOAD_ERR_OK) {
-    //         $messages = [
-    //             UPLOAD_ERR_INI_SIZE => 'Le fichier dépasse la taille maximale autorisée par le serveur.',
-    //             UPLOAD_ERR_FORM_SIZE => 'Le fichier dépasse la taille maximale autorisée par le formulaire.',
-    //             UPLOAD_ERR_PARTIAL => 'Le fichier n\'a été que partiellement téléchargé.',
-    //             UPLOAD_ERR_NO_FILE => 'Aucun fichier n\'a été téléchargé.',
-    //             UPLOAD_ERR_NO_TMP_DIR => 'Le dossier temporaire est manquant.',
-    //             UPLOAD_ERR_CANT_WRITE => 'Impossible d\'écrire le fichier sur le disque.',
-    //             UPLOAD_ERR_EXTENSION => 'Une extension PHP a arrêté le téléchargement.'
-    //         ];
-    //         return [
-    //             'success' => false,
-    //             'filename' => null,
-    //             'message' => $messages[$file['error']] ?? 'Erreur inconnue lors du téléchargement.'
-    //         ];
-    //     }
-        
-    //     // Vérifier la taille
-    //     if ($file['size'] > $max_size) {
-    //         return [
-    //             'success' => false,
-    //             'filename' => null,
-    //             'message' => 'Le fichier est trop volumineux. Taille maximale : ' . ($max_size / 1024 / 1024) . ' Mo.'
-    //         ];
-    //     }
-        
-    //     // Récupérer l'extension
-    //     $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        
-    //     // Vérifier l'extension
-    //     if (!empty($allowed_extensions) && !in_array($extension, $allowed_extensions)) {
-    //         return [
-    //             'success' => false,
-    //             'filename' => null,
-    //             'message' => 'Extension non autorisée. Extensions autorisées : ' . implode(', ', $allowed_extensions) . '.'
-    //         ];
-    //     }
-        
-    //     // Créer le dossier s'il n'existe pas
-    //     if (!is_dir($upload_dir)) {
-    //         if (!mkdir($upload_dir, 0755, true)) {
-    //             return [
-    //                 'success' => false,
-    //                 'filename' => null,
-    //                 'message' => 'Impossible de créer le dossier de téléchargement.'
-    //             ];
-    //         }
-    //     }
-        
-    //     // Vérifier que le dossier est accessible en écriture
-    //     if (!is_writable($upload_dir)) {
-    //         return [
-    //             'success' => false,
-    //             'filename' => null,
-    //             'message' => 'Le dossier de téléchargement n\'est pas accessible en écriture.'
-    //         ];
-    //     }
-        
-    //     // Générer un nom de fichier unique
-    //     $basename = pathinfo($file['name'], PATHINFO_FILENAME);
-    //     $basename = preg_replace('/[^a-zA-Z0-9-_]/', '_', $basename);
-    //     $basename = substr($basename, 0, 50);
-    //     $filename = $basename . '_' . time() . '_' . rand(1000, 9999) . '.' . $extension;
-        
-    //     // Chemin complet
-    //     $filepath = $upload_dir . '/' . $filename;
-        
-    //     // Déplacer le fichier
-    //     if (!move_uploaded_file($file['tmp_name'], $filepath)) {
-    //         return [
-    //             'success' => false,
-    //             'filename' => null,
-    //             'message' => 'Erreur lors du déplacement du fichier.'
-    //         ];
-    //     }
-        
-    //     return [
-    //         'success' => true,
-    //         'filename' => $filename,
-    //         'message' => 'Fichier téléchargé avec succès.'
-    //     ];
-    // }
+    function uploadFile($file, $uploadDir, $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'])
+{
+    // Vérifier les erreurs
+    if ($file['error'] !== UPLOAD_ERR_OK) {
+        return ['success' => false, 'message' => 'Erreur lors de l\'upload du fichier.'];
+    }
+
+    // Vérifier la taille (max 5MB)
+    if ($file['size'] > 5 * 1024 * 1024) {
+        return ['success' => false, 'message' => 'Le fichier est trop volumineux (max 5MB).'];
+    }
+
+    // Vérifier l'extension
+    $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    if (!in_array($extension, $allowedExtensions)) {
+        return ['success' => false, 'message' => 'Extension non autorisée. Types acceptés : ' . implode(', ', $allowedExtensions)];
+    }
+
+    // Créer le dossier si nécessaire
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
+
+    // Générer un nom unique
+    $filename = uniqid() . '.' . $extension;
+    $destination = $uploadDir . '/' . $filename;
+
+    // Déplacer le fichier
+    if (move_uploaded_file($file['tmp_name'], $destination)) {
+        return ['success' => true, 'filename' => $filename];
+    }
+
+    return ['success' => false, 'message' => 'Erreur lors du déplacement du fichier.'];
+}
 }
 
 // Les autres fonctions...

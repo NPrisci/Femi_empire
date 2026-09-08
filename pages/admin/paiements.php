@@ -1,7 +1,6 @@
 <?php
 // pages/admin/paiements.php - Gestion des paiements
 require_once __DIR__ . '/includes/functions.php';
-require_once __DIR__ . '/includes/header.php';
 
 $pdo = getDB();
 
@@ -108,6 +107,9 @@ foreach ($stats as $s) {
 }
 
 $ca_total = $pdo->query("SELECT SUM(montant) as total FROM commandes WHERE status = 'payee'")->fetch()['total'] ?? 0;
+
+require_once __DIR__ . '/includes/header.php';
+
 ?>
 
 <div class="admin-content">

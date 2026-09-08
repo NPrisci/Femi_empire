@@ -37,40 +37,40 @@ requireAdmin();
 
 $current_page = basename($_SERVER['PHP_SELF']);
 $user_name = $_SESSION['user_prenom'] . ' ' . $_SESSION['user_nom'];
-function uploadFile($file, $uploadDir, $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'])
-{
-    // Vérifier les erreurs
-    if ($file['error'] !== UPLOAD_ERR_OK) {
-        return ['success' => false, 'message' => 'Erreur lors de l\'upload du fichier.'];
-    }
+// function uploadFile($file, $uploadDir, $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'])
+// {
+//     // Vérifier les erreurs
+//     if ($file['error'] !== UPLOAD_ERR_OK) {
+//         return ['success' => false, 'message' => 'Erreur lors de l\'upload du fichier.'];
+//     }
 
-    // Vérifier la taille (max 5MB)
-    if ($file['size'] > 5 * 1024 * 1024) {
-        return ['success' => false, 'message' => 'Le fichier est trop volumineux (max 5MB).'];
-    }
+//     // Vérifier la taille (max 5MB)
+//     if ($file['size'] > 5 * 1024 * 1024) {
+//         return ['success' => false, 'message' => 'Le fichier est trop volumineux (max 5MB).'];
+//     }
 
-    // Vérifier l'extension
-    $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-    if (!in_array($extension, $allowedExtensions)) {
-        return ['success' => false, 'message' => 'Extension non autorisée. Types acceptés : ' . implode(', ', $allowedExtensions)];
-    }
+//     // Vérifier l'extension
+//     $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+//     if (!in_array($extension, $allowedExtensions)) {
+//         return ['success' => false, 'message' => 'Extension non autorisée. Types acceptés : ' . implode(', ', $allowedExtensions)];
+//     }
 
-    // Créer le dossier si nécessaire
-    if (!is_dir($uploadDir)) {
-        mkdir($uploadDir, 0777, true);
-    }
+//     // Créer le dossier si nécessaire
+//     if (!is_dir($uploadDir)) {
+//         mkdir($uploadDir, 0777, true);
+//     }
 
-    // Générer un nom unique
-    $filename = uniqid() . '.' . $extension;
-    $destination = $uploadDir . '/' . $filename;
+//     // Générer un nom unique
+//     $filename = uniqid() . '.' . $extension;
+//     $destination = $uploadDir . '/' . $filename;
 
-    // Déplacer le fichier
-    if (move_uploaded_file($file['tmp_name'], $destination)) {
-        return ['success' => true, 'filename' => $filename];
-    }
+//     // Déplacer le fichier
+//     if (move_uploaded_file($file['tmp_name'], $destination)) {
+//         return ['success' => true, 'filename' => $filename];
+//     }
 
-    return ['success' => false, 'message' => 'Erreur lors du déplacement du fichier.'];
-}
+//     return ['success' => false, 'message' => 'Erreur lors du déplacement du fichier.'];
+// }
 ?>
 <!DOCTYPE html>
 <html lang="fr">
