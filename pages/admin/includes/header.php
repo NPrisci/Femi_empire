@@ -1,6 +1,38 @@
 <?php
-// pages/admin/includes/header.php
+
 require_once __DIR__ . '/functions.php';
+/*
+|--------------------------------------------------------------------------
+| DÉCONNEXION
+|--------------------------------------------------------------------------
+*/
+if (isset($_GET['action']) && $_GET['action'] === 'logout') {
+
+    // Vider les données de session
+    $_SESSION = [];
+
+    // Supprimer le cookie de session
+    if (ini_get('session.use_cookies')) {
+        $params = session_get_cookie_params();
+
+        setcookie(
+            session_name(),
+            '',
+            time() - 42000,
+            $params['path'],
+            $params['domain'],
+            $params['secure'],
+            $params['httponly']
+        );
+    }
+
+    // Détruire la session
+    session_destroy();
+
+    // Rediriger vers la page d'accueil
+    header('Location: index.php');
+    exit;
+}
 requireAdmin();
 
 $current_page = basename($_SERVER['PHP_SELF']);
@@ -97,7 +129,7 @@ function uploadFile($file, $uploadDir, $allowedExtensions = ['jpg', 'jpeg', 'png
                     <span class="nav-icon">⚙️</span>
                     <span>Paramètres</span>
                 </a>
-                <a href="logout.php" class="logout-link">
+                <a href="?action=logout" class="logout-link">
                     <span class="nav-icon">🚪</span>
                     <span>Déconnexion</span>
                 </a>

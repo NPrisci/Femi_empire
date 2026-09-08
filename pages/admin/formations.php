@@ -317,6 +317,8 @@ function formatDate($date) {
     if (!$date) return 'Non définie';
     return date('d/m/Y H:i', strtotime($date));
 }
+
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <div class="admin-content">
