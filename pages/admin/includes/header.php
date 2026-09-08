@@ -30,49 +30,51 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
     session_destroy();
 
     // Rediriger vers la page d'accueil
-    header('Location: index.php');
+    header('Location: /');
     exit;
 }
 requireAdmin();
 
 $current_page = basename($_SERVER['PHP_SELF']);
 $user_name = $_SESSION['user_prenom'] . ' ' . $_SESSION['user_nom'];
-function uploadFile($file, $uploadDir, $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp']) {
+function uploadFile($file, $uploadDir, $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp'])
+{
     // Vérifier les erreurs
     if ($file['error'] !== UPLOAD_ERR_OK) {
         return ['success' => false, 'message' => 'Erreur lors de l\'upload du fichier.'];
     }
-    
+
     // Vérifier la taille (max 5MB)
     if ($file['size'] > 5 * 1024 * 1024) {
         return ['success' => false, 'message' => 'Le fichier est trop volumineux (max 5MB).'];
     }
-    
+
     // Vérifier l'extension
     $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
     if (!in_array($extension, $allowedExtensions)) {
         return ['success' => false, 'message' => 'Extension non autorisée. Types acceptés : ' . implode(', ', $allowedExtensions)];
     }
-    
+
     // Créer le dossier si nécessaire
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0777, true);
     }
-    
+
     // Générer un nom unique
     $filename = uniqid() . '.' . $extension;
     $destination = $uploadDir . '/' . $filename;
-    
+
     // Déplacer le fichier
     if (move_uploaded_file($file['tmp_name'], $destination)) {
         return ['success' => true, 'filename' => $filename];
     }
-    
+
     return ['success' => false, 'message' => 'Erreur lors du déplacement du fichier.'];
 }
 ?>
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -80,6 +82,7 @@ function uploadFile($file, $uploadDir, $allowedExtensions = ['jpg', 'jpeg', 'png
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/admin.css">
 </head>
+
 <body>
     <div class="admin-wrapper">
         <!-- Sidebar -->
@@ -91,7 +94,7 @@ function uploadFile($file, $uploadDir, $allowedExtensions = ['jpg', 'jpeg', 'png
                 </div>
                 <span class="logo-badge">Admin</span>
             </div>
-            
+
             <nav class="sidebar-nav">
                 <a href="index.php" class="<?= $current_page == 'index.php' ? 'active' : '' ?>">
                     <span class="nav-icon">📊</span>
@@ -169,8 +172,8 @@ function uploadFile($file, $uploadDir, $allowedExtensions = ['jpg', 'jpeg', 'png
 
             <!-- Flash Messages -->
             <?php if ($flash = getFlash()): ?>
-            <div class="flash-message flash-<?= $flash['type'] ?>">
-                <?= htmlspecialchars($flash['message']) ?>
-                <button class="flash-close">&times;</button>
-            </div>
+                <div class="flash-message flash-<?= $flash['type'] ?>">
+                    <?= htmlspecialchars($flash['message']) ?>
+                    <button class="flash-close">&times;</button>
+                </div>
             <?php endif; ?>

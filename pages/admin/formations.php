@@ -2,7 +2,7 @@
 // pages/admin/formations.php - Gestion CRUD des formations avec supports et exercices
 
 // require_once __DIR__ . '/includes/header.php';
-
+require_once __DIR__ . '/includes/functions.php';
 $pdo = getDB();
 $message = '';
 $error = '';
